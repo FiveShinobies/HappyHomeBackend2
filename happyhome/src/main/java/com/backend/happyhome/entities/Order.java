@@ -40,28 +40,28 @@ public class Order {
 	private Consumer myConsumer;
 	
 	@ManyToOne
-	@JoinColumn(name="vendor_id")
+	@JoinColumn(name="vendor_id",nullable = false)
 	private Vendor myVendor;
 	
-	@ManyToOne
-	@JoinColumn(name="service_id",nullable = false)
-	private HouseholdService myServices;
+	@ManyToMany
+	@JoinTable(name = "service_order" , joinColumns = @JoinColumn(name = "so_order_id") , inverseJoinColumns=@JoinColumn(name="so_service_id") )
+	private Set<Service> myServices;
 	
 	//one to one mappings ------------------------------------------------------------------------------------------
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="consumer_transaction_id")
+	@JoinColumn(name="consumer_transaction_id",nullable = false)
 	private ConsumerTransaction myConsumerTransaction;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="admin_transaction_id")
+	@JoinColumn(name="admin_transaction_id",nullable = false)
 	private AdminTransaction myAdminTransaction;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="consumer_review_id")
+	@JoinColumn(name="consumer_review_id",nullable = false)
 	private ConsumerReview myConsumerReview;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="vendor_review_id")
+	@JoinColumn(name="vendor_review_id",nullable = false)
 	private VendorReview myVendorReview;
 	//-----------------------------------------------------------------------------------------------------------------
 	

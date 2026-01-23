@@ -1,6 +1,5 @@
 package com.backend.happyhome.entities;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -40,6 +39,6 @@ public class Vendor {
 
 	@ManyToMany
 	@JoinTable(name = "vendor_service" , joinColumns = @JoinColumn(name = "vendor_id") , inverseJoinColumns = @JoinColumn(name = "service_id"))
-	private Set<HouseholdService> myServices= new HashSet<>();
+	private Set<Service> myServices;
 	
 }

@@ -1,5 +1,7 @@
 package com.backend.happyhome.entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,27 +9,24 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Consumer {
+@Table(name = "signin_logs")
+@Data
+public class SignInLog {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="consumer_id")
-	private Long consumerId;
-	@OneToOne(cascade=CascadeType.ALL)
+	@Column(name="log_id")
+	private Long logId;
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="user_id")
-	private User myUser;
-	@Column(name="reward_points",nullable=false)
-	private int rewardPoints;
+	private User user;
+	@Column(name="login_time",nullable=false)
+	private LocalDateTime loginTime;
+	@Column(name="logout_time",nullable=false)
+	private LocalDateTime logoutTime;
 }

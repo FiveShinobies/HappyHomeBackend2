@@ -1,7 +1,6 @@
 package com.backend.happyhome.entities;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 import com.backend.happyhome.entities.enums.UserRole;
@@ -58,6 +57,6 @@ public class User {
 
 	@ManyToMany(cascade=CascadeType.ALL)
 	@JoinTable(name = "user_language" , joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="lang_id"))
-	private Set<Language> languages = new HashSet<>();
+	private Set<Language> languages;
 
 }

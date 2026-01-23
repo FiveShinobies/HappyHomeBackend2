@@ -33,10 +33,10 @@ public class ServiceImage {
 	
 	@ManyToOne
 	@JoinColumn(name="service_id",nullable=false)
-	private HouseholdService myService;
+	private Service myService;
 	
 	@Lob
-    @Column(name = "image", columnDefinition = "LONGBLOB", nullable = false)
+    @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
 	
 }
