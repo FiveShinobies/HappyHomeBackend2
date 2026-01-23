@@ -33,7 +33,7 @@ public class ServiceImage {
 	
 	@ManyToOne
 	@JoinColumn(name="service_id",nullable=false)
-	private Service myService;
+	private HouseholdService myService;
 	
 	@Lob
     @Column(name = "image", columnDefinition = "LONGBLOB")
