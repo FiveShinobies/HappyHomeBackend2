@@ -4,7 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.backend.happyhome.entities.VendorReview;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface VendorReviewRepo extends JpaRepository<VendorReview, Long> {
 	boolean existsByMyOrderOrderId(Long orderId);
 	
