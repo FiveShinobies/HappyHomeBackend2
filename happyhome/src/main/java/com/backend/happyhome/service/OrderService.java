@@ -1,15 +1,20 @@
 package com.backend.happyhome.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import com.backend.happyhome.dtos.ConsumerReviewDTOA;
-import com.backend.happyhome.dtos.PlaceOrderDTOA;
-import com.backend.happyhome.entities.ConsumerReview;
-import com.backend.happyhome.entities.Order;
+import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.entities.Address;
+import com.backend.happyhome.entities.Consumer;
 
 public interface OrderService {
 
+	List<OrderDtoC> getIncomingOrderRequest();
+	List<OrderDtoC> getOngoingOrders();
+	Address getAddress(Long oID);
+	Consumer getConsumer(Long oId);
+	boolean updateStatusToInProgress(Long oId);
+	boolean updateStatusToCompleted(Long oId);
+ 
 	List<Order> getOrdersByConsumerId(Long cid);
 	
 	Order getOrderDetailsById(Long oid);
@@ -19,6 +24,5 @@ public interface OrderService {
 	ConsumerReview addConsumerReviewForAnOrder(Long oid , ConsumerReviewDTOA cr);
 	
 	Order addOrder(PlaceOrderDTOA newOrder);
-	
 	
 }

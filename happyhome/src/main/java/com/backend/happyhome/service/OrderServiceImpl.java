@@ -1,5 +1,18 @@
 package com.backend.happyhome.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
+import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.entities.Address;
+import com.backend.happyhome.entities.Consumer;
+import com.backend.happyhome.entities.Order;
+import com.backend.happyhome.entities.enums.Status;
+import com.backend.happyhome.repository.OrderRepo;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,12 +39,15 @@ import com.backend.happyhome.repository.VendorRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl implements OrderService{
 
 	private final OrderRepo orderRepo;
+	
+  private final OrderRepo orderRepo;
 	
 	private final ConsumerReviewRepo crRepo;
 	
@@ -43,6 +59,47 @@ public class OrderServiceImpl implements OrderService {
 	
 	private final AddressRepo addressRepo; 
 	
+	@Override
+	public List<OrderDtoC> getIncomingOrderRequest() {
+		return orderRepo.findByStatus(Status.UNASSIGNED);
+	}
+
+	@Override
+	public List<OrderDtoC> getOngoingOrders() {
+		return orderRepo.findByStatus(Status.INPROGRESS);
+	}
+	
+	public Address getAddress(Long oId) {
+		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
+		
+		return order.getOrderAddress();
+	}
+
+	@Override
+	public Consumer getConsumer(Long oId) {
+		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
+		
+		return order.getMyConsumer();
+	}
+
+	@Override
+	public boolean updateStatusToInProgress(Long oId) {
+		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
+		
+		order.setStatus(Status.INPROGRESS);
+		
+		return true;
+	}
+
+	@Override
+	public boolean updateStatusToCompleted(Long oId) {
+		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
+		
+		order.setStatus(Status.COMPLETED);
+		
+		return true;
+	}
+		
 	@Override
 	public List<Order> getOrdersByConsumerId(Long cid) {
 		return orderRepo.findByMyConsumerConsumerId(cid);
