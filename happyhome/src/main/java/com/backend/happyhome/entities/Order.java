@@ -43,9 +43,9 @@ public class Order {
 	@JoinColumn(name="vendor_id",nullable = false)
 	private Vendor myVendor;
 	
-	@ManyToMany
-	@JoinTable(name = "service_order" , joinColumns = @JoinColumn(name = "so_order_id") , inverseJoinColumns=@JoinColumn(name="so_service_id") )
-	private Set<Service> myServices;
+	@ManyToOne
+	@JoinColumn(name = "service_id",nullable = false)
+	private HouseholdService myServices;
 	
 	//one to one mappings ------------------------------------------------------------------------------------------
 	@OneToOne(cascade = CascadeType.ALL)
