@@ -84,5 +84,8 @@ public class Order {
 	@Enumerated(EnumType.STRING)
 	private Priority priority; 
 	
+	@OneToOne
+	@JoinColumn(name="order_address")
+	private Address myAddress;
 	
 }
