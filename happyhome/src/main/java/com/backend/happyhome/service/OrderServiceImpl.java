@@ -95,13 +95,10 @@ public class OrderServiceImpl implements OrderService {
 		
 		Consumer c = consumerRepo.findById(reqOdr.getConsumerId()).orElseThrow();
 		
-		Vendor v = vendorRepo.findById(reqOdr.getVendorId()).orElseThrow();
-		
 		HouseholdService s = serviceRepo.findById(reqOdr.getServiceId()).orElseThrow();
 		
 		newOdr.setMyConsumer(c);
 		newOdr.setMyServices(s);
-		newOdr.setMyVendor(v);
 		newOdr.setOrderDateTime(reqOdr.getTimeSlot());
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
 		newOdr.setStatus(reqOdr.getStatus());

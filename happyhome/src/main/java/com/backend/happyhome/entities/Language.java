@@ -1,5 +1,6 @@
 package com.backend.happyhome.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -32,7 +33,7 @@ public class Language {
 	    private String langName;
 
 	    @ManyToMany(mappedBy = "languages")
-	    private Set<User> users;
+	    private Set<User> users = new HashSet<>();
 
 
 }
