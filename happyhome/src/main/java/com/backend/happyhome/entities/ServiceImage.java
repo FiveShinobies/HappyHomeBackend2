@@ -36,7 +36,7 @@ public class ServiceImage {
 	private HouseholdService myService;
 	
 	@Lob
-    @Column(name = "image", columnDefinition = "LONGBLOB", nullable = false)
+    @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
 	
 }
