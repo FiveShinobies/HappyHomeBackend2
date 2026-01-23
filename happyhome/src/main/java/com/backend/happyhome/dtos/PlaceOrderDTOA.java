@@ -21,9 +21,6 @@ public class PlaceOrderDTOA {
 	private Long consumerId;
 	
 	@NotNull
-	private Long vendorId;
-	
-	@NotNull
 	private Long serviceId;	
 	
 	@NotNull

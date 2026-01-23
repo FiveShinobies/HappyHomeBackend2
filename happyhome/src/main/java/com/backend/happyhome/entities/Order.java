@@ -40,7 +40,7 @@ public class Order {
 	private Consumer myConsumer;
 	
 	@ManyToOne
-	@JoinColumn(name="vendor_id",nullable = false)
+	@JoinColumn(name="vendor_id")
 	private Vendor myVendor;
 	
 	@ManyToOne
