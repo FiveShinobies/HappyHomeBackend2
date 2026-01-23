@@ -1,5 +1,6 @@
 package com.backend.happyhome.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.backend.happyhome.entities.enums.Category;
@@ -15,6 +16,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -31,7 +35,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString(exclude = {"myVendors", "myOrders"})
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-class Service {
+public class HouseholdService {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,10 +60,10 @@ class Service {
 	private Category category;
 
 	@ManyToMany(mappedBy = "myServices")
-	private Set<Vendor> myVendors;
+	private Set<Vendor> myVendors = new HashSet<>();
 
-	@ManyToMany(mappedBy = "myServices")
-	private Set<Order> myOrders;
+	@OneToMany(mappedBy = "myServices")
+	private Set<Order> myOrders = new HashSet<>();
 	
 	
 }

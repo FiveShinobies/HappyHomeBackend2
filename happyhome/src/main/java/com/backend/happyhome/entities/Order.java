@@ -40,28 +40,28 @@ public class Order {
 	private Consumer myConsumer;
 	
 	@ManyToOne
-	@JoinColumn(name="vendor_id",nullable = false)
+	@JoinColumn(name="vendor_id")
 	private Vendor myVendor;
 	
-	@ManyToMany
-	@JoinTable(name = "service_order" , joinColumns = @JoinColumn(name = "so_order_id") , inverseJoinColumns=@JoinColumn(name="so_service_id") )
-	private Set<Service> myServices;
+	@ManyToOne
+	@JoinColumn(name="service_id",nullable = false)
+	private HouseholdService myServices;
 	
 	//one to one mappings ------------------------------------------------------------------------------------------
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="consumer_transaction_id",nullable = false)
+	@JoinColumn(name="consumer_transaction_id")
 	private ConsumerTransaction myConsumerTransaction;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="admin_transaction_id",nullable = false)
+	@JoinColumn(name="admin_transaction_id")
 	private AdminTransaction myAdminTransaction;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="consumer_review_id",nullable = false)
+	@JoinColumn(name="consumer_review_id")
 	private ConsumerReview myConsumerReview;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="vendor_review_id",nullable = false)
+	@JoinColumn(name="vendor_review_id")
 	private VendorReview myVendorReview;
 	//-----------------------------------------------------------------------------------------------------------------
 	
@@ -82,7 +82,14 @@ public class Order {
 	
 	@Column(name="priority")
 	@Enumerated(EnumType.STRING)
-	private Priority priority; 
+	private Priority priority;
 	
+	@OneToOne
+	@JoinColumn(name="address_id", nullable = false)
+	private Address orderAddress;
+	
+	@OneToOne
+	@JoinColumn(name="order_address")
+	private Address myAddress;
 	
 }
