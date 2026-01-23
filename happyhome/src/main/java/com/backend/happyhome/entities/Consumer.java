@@ -20,7 +20,7 @@ public class Consumer {
 	private Long consumerId;
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="user_id")
-	private User user;
+	private User myUser;
 	@Column(name="reward_points",nullable=false)
 	private int rewardPoints;
 }
