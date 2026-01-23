@@ -14,4 +14,15 @@ public interface OrderService {
 	Consumer getConsumer(Long oId);
 	boolean updateStatusToInProgress(Long oId);
 	boolean updateStatusToCompleted(Long oId);
+ 
+	List<Order> getOrdersByConsumerId(Long cid);
+	
+	Order getOrderDetailsById(Long oid);
+	
+	Order changeTimeSlot(Long oid , LocalDateTime updatedTime);
+	
+	ConsumerReview addConsumerReviewForAnOrder(Long oid , ConsumerReviewDTOA cr);
+	
+	Order addOrder(PlaceOrderDTOA newOrder);
+	
 }

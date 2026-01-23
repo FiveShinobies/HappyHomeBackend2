@@ -1,5 +1,6 @@
 package com.backend.happyhome.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.backend.happyhome.entities.enums.Category;
@@ -59,10 +60,10 @@ public class HouseholdService {
 	private Category category;
 
 	@ManyToMany(mappedBy = "myServices")
-	private Set<Vendor> myVendors;
+	private Set<Vendor> myVendors = new HashSet<>();
 
-	@OneToMany(mappedBy="myServices")
-	private Set<Order> myOrders;
+	@OneToMany(mappedBy = "myServices")
+	private Set<Order> myOrders = new HashSet<>();
 	
 	
 }
