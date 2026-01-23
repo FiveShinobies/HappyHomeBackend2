@@ -27,9 +27,13 @@ public class PlaceOrderDTOA {
 	private LocalDateTime timeSlot;
 	
 	@NotNull
+	private Long addressId;
+	
+	@NotNull
 	private Double orderPrice;
 	
-	private Status status = Status.NOT_ASSIGNED;
+	
+	private Status status = Status.UNASSIGNED;
 	
 	private Priority priority = Priority.NORMAL;
 	

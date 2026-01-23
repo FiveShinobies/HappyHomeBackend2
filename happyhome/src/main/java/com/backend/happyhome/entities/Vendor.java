@@ -2,7 +2,6 @@ package com.backend.happyhome.entities;
 
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,6 +38,6 @@ public class Vendor {
 
 	@ManyToMany
 	@JoinTable(name = "vendor_service" , joinColumns = @JoinColumn(name = "vendor_id") , inverseJoinColumns = @JoinColumn(name = "service_id"))
-	private Set<Service> myServices;
+	private Set<HouseholdService> myServices = new HashSet<>();
 	
 }
