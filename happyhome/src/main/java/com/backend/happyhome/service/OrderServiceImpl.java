@@ -1,27 +1,17 @@
 package com.backend.happyhome.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
-import com.backend.happyhome.dtos.OrderDtoC;
-import com.backend.happyhome.entities.Address;
-import com.backend.happyhome.entities.Consumer;
-import com.backend.happyhome.entities.Order;
-import com.backend.happyhome.entities.enums.Status;
-import com.backend.happyhome.repository.OrderRepo;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.backend.happyhome.custom_exceptions.CannotChangeTimeSlotException;
+import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExistException;
 import com.backend.happyhome.custom_exceptions.ReviewAlreadyExistsException;
 import com.backend.happyhome.dtos.ConsumerReviewDTOA;
+import com.backend.happyhome.dtos.OrderDtoC;
 import com.backend.happyhome.dtos.PlaceOrderDTOA;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
@@ -36,7 +26,6 @@ import com.backend.happyhome.repository.HouseholdServiceRepo;
 import com.backend.happyhome.repository.OrderRepo;
 import com.backend.happyhome.repository.VendorRepo;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 
@@ -46,8 +35,6 @@ import lombok.RequiredArgsConstructor;
 public class OrderServiceImpl implements OrderService{
 
 	private final OrderRepo orderRepo;
-	
-  private final OrderRepo orderRepo;
 	
 	private final ConsumerReviewRepo crRepo;
 	
