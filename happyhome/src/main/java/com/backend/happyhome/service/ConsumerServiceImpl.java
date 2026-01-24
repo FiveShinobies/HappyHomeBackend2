@@ -18,6 +18,20 @@ import com.backend.happyhome.repository.ConsumerRepo;
 import com.backend.happyhome.repository.OrderRepo;
 import com.backend.happyhome.repository.UserRepo;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.backend.happyhome.dtos.ConsumerProfileDetailsDTOA;
+import com.backend.happyhome.entities.Language;
+import com.backend.happyhome.entities.PaymentCard;
+import com.backend.happyhome.entities.PaymentUpi;
+import com.backend.happyhome.entities.UserImage;
+import com.backend.happyhome.repository.LanguageRepo;
+import com.backend.happyhome.repository.PaymentCardRepo;
+import com.backend.happyhome.repository.PaymentUpiRepo;
+import com.backend.happyhome.repository.UserImageRepo;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -29,6 +43,14 @@ public class ConsumerServiceImpl implements ConsumerService {
 	private final UserRepo userRepo;
 	private final AddressRepo addressRepo;
 	private final OrderRepo orderRepo;
+		private final PaymentUpiRepo upiRepo;
+	
+	private final PaymentCardRepo cardRepo;
+	
+	private final UserImageRepo imgRepo;
+	
+	private final LanguageRepo langRepo;
+
 	@Override
 	public List<Consumer> getAllConsumers() {
 		return userRepo.findByRole(UserRole.CONSUMER);
@@ -89,5 +111,39 @@ public class ConsumerServiceImpl implements ConsumerService {
 	public Order getOrderOfConsumer(Long oId) {
 		return orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
 	}
+
+	
+	@Override
+	public ConsumerProfileDetailsDTOA getConsumerProfileDetailsById(Long cid) {
+		
+		ConsumerProfileDetailsDTOA cpd = new ConsumerProfileDetailsDTOA();
+		
+		Optional<Consumer> c = consumerRepo.findById(cid);
+		Consumer cr =  c.orElseThrow();
+		cpd.setConsumer(cr);
+		
+		Long uid = cr.getMyUser().getUserId();
+		
+		List<Address> adrs = addressRepo.findByMyUserUserId(uid);
+		cpd.setAddresses(adrs);
+		 
+		List<PaymentUpi> upis = upiRepo.findByMyUserUserId(uid);
+		cpd.setUpis(upis);
+		
+		List<PaymentCard> cards = cardRepo.findByMyUserUserId(uid);
+		cpd.setCards(cards);
+		 
+		UserImage img =  imgRepo.findById(uid).orElse(null) ; 
+		cpd.setImage(img);
+		
+		List<Language> langs = langRepo.findByUsersUserId(uid);
+		cpd.setLanguages(langs);
+		
+		return cpd;
+		
+	}
+
+	
+
 
 }

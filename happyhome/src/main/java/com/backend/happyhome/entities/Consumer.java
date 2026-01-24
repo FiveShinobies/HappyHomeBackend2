@@ -18,6 +18,7 @@ public class Consumer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="consumer_id")
 	private Long consumerId;
+	
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="user_id")
 	private User myUser;

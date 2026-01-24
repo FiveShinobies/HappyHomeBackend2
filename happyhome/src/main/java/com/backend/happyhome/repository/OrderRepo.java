@@ -9,6 +9,7 @@ import com.backend.happyhome.dtos.OrderDtoC;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.entities.enums.Status;
+import com.backend.happyhome.entities.Order;
 
 @Repository
 public interface OrderRepo extends JpaRepository<Order, Long> {
@@ -17,4 +18,6 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
 
 	List<Order> findByMyConsumer(Consumer myConsumer);
 
+	List<Order> findByMyConsumerConsumerId(Long cid);	
+	
 }
