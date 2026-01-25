@@ -5,37 +5,29 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.happyhome.dtos.OrderDtoC;
-import com.backend.happyhome.entities.Address;
-import com.backend.happyhome.service.OrderService;
-import com.backend.happyhome.service.VendorService;
-import com.backend.happyhome.dtos.VendorAddressResponseDTOE;
 import com.backend.happyhome.dtos.VendorAddressResponseDTOE;
 import com.backend.happyhome.dtos.VendorBankingResponseDTOE;
 import com.backend.happyhome.dtos.VendorEditProfileRequestDTOE;
 import com.backend.happyhome.dtos.VendorFeedbackRequestDTOE;
 import com.backend.happyhome.dtos.VendorProfileResponseDTOE;
+import com.backend.happyhome.entities.Address;
+import com.backend.happyhome.service.OrderService;
 import com.backend.happyhome.service.VendorAddressService;
 import com.backend.happyhome.service.VendorBankingService;
 import com.backend.happyhome.service.VendorDetailsService;
 import com.backend.happyhome.service.VendorEditProfileService;
 import com.backend.happyhome.service.VendorReviewService;
+import com.backend.happyhome.service.VendorService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import java.util.List;
-
-
-import com.backend.happyhome.dtos.OrderDtoC;
-import com.backend.happyhome.service.OrderService;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -46,23 +38,11 @@ public class VendorController {
 	private final VendorAddressService vendorAddressService;
 	private final OrderService orderService;
 	private final VendorService vendorService;
+  	private final VendorDetailsService vendorDetailsService;
+    private final VendorEditProfileService vendorEditProfileService;
+    private final VendorBankingService vendorBankingService;
+    private final VendorReviewService vendorReviewService;
 	
-	@GetMapping
-	ResponseEntity<List<OrderDtoC>> getIncomingRequest(){
-		List<OrderDtoC> list = orderService.getIncomingOrderRequest();
-		
-		return new ResponseEntity<>(list,HttpStatus.OK);
-	}
-	
-	@PostMapping
-	ResponseEntity<String> acceptRequest(@RequestBody Long oId, @RequestBody Long vId){
-		boolean hasBeenAccepted = vendorService.acceptRequest(oId, vId);
-		if(hasBeenAccepted) {
-			return new ResponseEntity<>("Request Accepted", HttpStatus.ACCEPTED);
-		}else {
-			return new ResponseEntity<>("Request Not Accepted", HttpStatus.NOT_ACCEPTABLE);
-		}
-	}
 	
 	@GetMapping("/details/{id}")
 	ResponseEntity<OrderDtoC> getOngoingOrderDetails(@PathVariable Long oId){
@@ -73,18 +53,8 @@ public class VendorController {
 	ResponseEntity<Address> getAddressOfOrder(@PathVariable Long oId){
 		return new ResponseEntity<>(vendorService.getAddressOfOrder(oId),HttpStatus.OK);
 	}
-	
-	  
-	    @GetMapping("/{vendorId}/address")
-	    public ResponseEntity<VendorAddressResponseDTOE> getVendorAddress(
-	            @PathVariable Long vendorId) {
-	    	
-  	private final VendorDetailsService vendorDetailsService;
-    private final VendorEditProfileService vendorEditProfileService;
-    private final VendorBankingService vendorBankingService;
-    private final VendorAddressService vendorAddressService;
-    private final VendorReviewService vendorReviewService;
-    private final OrderService orderService;
+	 	
+
     //  Get Vendor Profile 
     @GetMapping("/{vendorId}/profile")
     public ResponseEntity<VendorProfileResponseDTOE> getVendorProfile(
@@ -148,10 +118,14 @@ public class VendorController {
 	    	return ResponseEntity.ok(luo);
 	    }
 	    
-	    @PostMapping("/work")
-	    public ResponseEntity<?> acceptWork(@RequestBody Long vendorId , @RequestBody Long orderId){
-	    //to be completed
-	    	return ResponseEntity.ok(null);
+	    @PostMapping("/work/{vId}")
+	    public ResponseEntity<?> acceptWork(@RequestParam Long vId , @RequestBody Long oId){
+	    	boolean hasBeenAccepted = vendorService.acceptRequest(oId, vId);
+			if(hasBeenAccepted) {
+				return new ResponseEntity<>("Request Accepted", HttpStatus.ACCEPTED);
+			}else {
+				return new ResponseEntity<>("Request Not Accepted", HttpStatus.NOT_ACCEPTABLE);
+			}
 	    }
 	    
 	    
