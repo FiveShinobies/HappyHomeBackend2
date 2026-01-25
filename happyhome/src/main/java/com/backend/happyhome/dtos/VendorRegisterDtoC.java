@@ -1,9 +1,8 @@
 package com.backend.happyhome.dtos;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-import com.backend.happyhome.entities.*;
+import java.util.List;
+
 
 import lombok.Data;
 
@@ -16,9 +15,9 @@ public class VendorRegisterDtoC {
 	private String password;
 	private String phone;
 	private LocalDate dob;
-	private Address address;
+	private AddressDto address;
 	private String aadhardNo;
 	private String panNo;
 	private int experience;
-	private Set<HouseholdService> services = new HashSet<>();
+	private List<ServiceDtoC> services;
 }

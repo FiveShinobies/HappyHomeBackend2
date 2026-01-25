@@ -20,7 +20,7 @@ import com.backend.happyhome.entities.Order;
 public interface OrderService {
 
 	List<OrderDtoC> getIncomingOrderRequest();
-	List<OrderDtoC> getOngoingOrders();
+	OrderDtoC getOngoingOrders(Long oId);
 	Address getAddress(Long oID);
 	Consumer getConsumer(Long oId);
 	boolean updateStatusToInProgress(Long oId);
