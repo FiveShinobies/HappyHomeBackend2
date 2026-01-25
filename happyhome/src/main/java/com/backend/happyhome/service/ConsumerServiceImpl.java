@@ -1,6 +1,7 @@
 package com.backend.happyhome.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,29 +9,24 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.dtos.ConsumerDtoC;
+import com.backend.happyhome.dtos.ConsumerProfileDetailsDTOA;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
+import com.backend.happyhome.entities.Language;
 import com.backend.happyhome.entities.Order;
+import com.backend.happyhome.entities.PaymentCard;
+import com.backend.happyhome.entities.PaymentUpi;
 import com.backend.happyhome.entities.User;
+import com.backend.happyhome.entities.UserImage;
 import com.backend.happyhome.entities.enums.UserRole;
 import com.backend.happyhome.repository.AddressRepo;
 import com.backend.happyhome.repository.ConsumerRepo;
-import com.backend.happyhome.repository.OrderRepo;
-import com.backend.happyhome.repository.UserRepo;
-
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.backend.happyhome.dtos.ConsumerProfileDetailsDTOA;
-import com.backend.happyhome.entities.Language;
-import com.backend.happyhome.entities.PaymentCard;
-import com.backend.happyhome.entities.PaymentUpi;
-import com.backend.happyhome.entities.UserImage;
 import com.backend.happyhome.repository.LanguageRepo;
+import com.backend.happyhome.repository.OrderRepo;
 import com.backend.happyhome.repository.PaymentCardRepo;
 import com.backend.happyhome.repository.PaymentUpiRepo;
 import com.backend.happyhome.repository.UserImageRepo;
+import com.backend.happyhome.repository.UserRepo;
 
 import lombok.RequiredArgsConstructor;
 

@@ -42,8 +42,8 @@ public class ConsumerTransaction {
 	@Column(name = "amount", nullable = false)
 	private Double amount;
 	
-	@Column(name = "payment_method", nullable = false)
-	private Payment paymentMethod;
+	@Column(name = "payment_id", nullable = false)
+	private String paymentId;
 	
 	@Column(name = "status", nullable = false)
 	private TransactionStatus status;

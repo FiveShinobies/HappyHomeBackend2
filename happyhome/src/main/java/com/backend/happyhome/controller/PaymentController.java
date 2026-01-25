@@ -1,5 +1,6 @@
 package com.backend.happyhome.controller;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.HmacUtils;
@@ -11,12 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.happyhome.dtos.PlaceOrderDTOA;
 import com.backend.happyhome.dtos.RazorpayPaymentDTOA;
+import com.backend.happyhome.dtos.consumer_dto.VerifyPaymentRequestDTO;
+import com.backend.happyhome.entities.ConsumerTransaction;
+import com.backend.happyhome.entities.enums.TransactionStatus;
+import com.backend.happyhome.service.OrderServiceImpl;
 import com.backend.happyhome.service.User_service.RazorpayService;
+import com.backend.happyhome.service.consumer_service.ConsumerTransactionServiceImpl;
 import com.razorpay.Order;
 import com.razorpay.RazorpayException;
 
 import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -26,19 +34,26 @@ public class PaymentController {
 
 	private final RazorpayService rpService;
 	
+	private final OrderServiceImpl orderService;
+	
+	private final ConsumerTransactionServiceImpl ctService;
+	
 	@PostMapping("/create-order")
-	public ResponseEntity<Map<String , Object>> createOrder(@RequestParam int amount, @RequestParam String currency) throws RazorpayException 
+	public ResponseEntity<Map<String , Object>> createOrder(@RequestParam int amount, @RequestParam String currency , @RequestParam String cid ) throws RazorpayException 
 	{
 
-	    Order order = rpService.createOrder(amount, currency, "receipt_001");
+	    Order order = rpService.createOrder(amount, currency, cid);
 	    
 	    return ResponseEntity.ok(order.toJson().toMap()); 
 	}
 
-	
+	//if verification successfull - place the order -- Response To be Decided
 	@PostMapping("/verify")
-	public void verifyPayment(@RequestBody RazorpayPaymentDTOA razorpayResponse) {
+	public ResponseEntity<?> verifyPayment( @RequestBody VerifyPaymentRequestDTO verifyAndOrderRes) {
 	
+		RazorpayPaymentDTOA razorpayResponse = verifyAndOrderRes.getPayment();
+		PlaceOrderDTOA newOrder = verifyAndOrderRes.getOrder();
+		
 		System.out.println("Order ID    : " + razorpayResponse.getRazorpayOrderId());
 		System.out.println("Payment ID  : " + razorpayResponse.getRazorpayPaymentId());
 		System.out.println("Signature   : " + razorpayResponse.getRazorpaySignature());
@@ -48,9 +63,23 @@ public class PaymentController {
 		String genSig = new HmacUtils("HmacSHA256" , rpService.getApiSecret()).hmacHex(data) ;
 		
 		if(genSig.equals(razorpayResponse.getRazorpaySignature())) {
-			System.out.println("Verification successfull");
+			System.out.println("Verification successfull");			
+			 com.backend.happyhome.entities.Order odr = orderService.addOrder(newOrder);
+			 	
+			 ConsumerTransaction ct = new ConsumerTransaction();
+			 ct.setOrderId(odr);
+			 ct.setPaymentId(razorpayResponse.getRazorpayPaymentId());
+			 ct.setAmount(odr.getOrderPrice());
+			 ct.setStatus(TransactionStatus.SUCCESS);
+			 ct.setTimestamp(LocalDateTime.now());
+			
+			 ctService.addTrasaction(ct);
+			 
+			 return ResponseEntity.ok("Order Placed");
+			 
 		}else {
 			System.out.println("Verification failed");
+			return ResponseEntity.ok("Order Cannot Be Placed");
 		}
 		
 	}

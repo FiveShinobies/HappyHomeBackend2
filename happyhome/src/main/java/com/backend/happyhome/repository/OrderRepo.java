@@ -25,4 +25,5 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
 	List<Order> findByMyConsumer(Consumer myConsumer);
 
 	List<Order> findByMyConsumerConsumerId(Long cid);	
+	
 }
