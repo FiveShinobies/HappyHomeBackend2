@@ -1,5 +1,8 @@
 package com.backend.happyhome.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,8 +38,9 @@ public class ServiceImage {
 	@JoinColumn(name="service_id",nullable=false)
 	private HouseholdService myService;
 	
-	@Lob
-    @Column(name = "image", columnDefinition = "LONGBLOB", nullable = false)
-    private byte[] image;
+	
+  @Column(name = "image", columnDefinition = "LONGBLOB")
+  @Lob
+  private byte[] image;
 	
 }
