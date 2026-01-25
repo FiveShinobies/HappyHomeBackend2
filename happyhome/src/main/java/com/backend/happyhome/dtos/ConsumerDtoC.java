@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Language;
 import com.backend.happyhome.entities.enums.UserStatus;
 
@@ -22,5 +21,5 @@ public class ConsumerDtoC {
 	private UserStatus userStatus;
 	private Set<Language> languages = new HashSet<>();
 	private int rewardPoints;
-	private Address address;
+	private AddressDto address;
 }

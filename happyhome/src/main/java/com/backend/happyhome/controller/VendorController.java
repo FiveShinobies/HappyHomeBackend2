@@ -3,7 +3,7 @@ package com.backend.happyhome.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +16,6 @@ import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.service.OrderService;
 import com.backend.happyhome.service.VendorService;
 import com.backend.happyhome.dtos.VendorAddressResponseDTOE;
-import com.backend.happyhome.service.OrderService;
 import com.backend.happyhome.service.VendorAddressService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,9 +24,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/vendor")
 @RequiredArgsConstructor
 public class VendorController {
-	
-  private final VendorAddressService vendorAddressService;
-
+  
+	private final VendorAddressService vendorAddressService;
 	private final OrderService orderService;
 	private final VendorService vendorService;
 	

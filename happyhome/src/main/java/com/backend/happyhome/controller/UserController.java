@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,13 +37,13 @@ public class UserController {
 	}
 	
 	@PostMapping("/signup/consumer")
-	ResponseEntity<String> signup(ConsumerRegisterDtoC user){
+	ResponseEntity<String> signup(@RequestBody ConsumerRegisterDtoC user){
 		userService.registerConsumerUser(user);
 		return new ResponseEntity<String>("Consumer Added",HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/signup/vendor")
-	ResponseEntity<String> signup(VendorRegisterDtoC user){
+	ResponseEntity<String> signup(@RequestBody VendorRegisterDtoC user){
 		userService.registerVendorUser(user);
 		return new ResponseEntity<String>("Vendor Added",HttpStatus.CREATED);
 	}
