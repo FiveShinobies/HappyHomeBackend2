@@ -74,7 +74,8 @@ public class AdminController {
 
 		adminServiceService.updateService(serviceId, request);
 
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(Map.of("message","Service updated successfully", "service", serviceId));
 
 	}
 
