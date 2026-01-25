@@ -1,27 +1,18 @@
 package com.backend.happyhome.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
-import com.backend.happyhome.dtos.OrderDtoC;
-import com.backend.happyhome.entities.Address;
-import com.backend.happyhome.entities.Consumer;
-import com.backend.happyhome.entities.Order;
-import com.backend.happyhome.entities.enums.Status;
-import com.backend.happyhome.repository.OrderRepo;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.backend.happyhome.custom_exceptions.CannotChangeTimeSlotException;
+import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
+import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExistException;
 import com.backend.happyhome.custom_exceptions.ReviewAlreadyExistsException;
 import com.backend.happyhome.dtos.ConsumerReviewDTOA;
+import com.backend.happyhome.dtos.OrderDtoC;
 import com.backend.happyhome.dtos.PlaceOrderDTOA;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
@@ -112,7 +103,7 @@ public class OrderServiceImpl implements OrderService{
 	public Order changeTimeSlot( Long oid , LocalDateTime updatedTime) {
 		
 		
-		Order o = orderRepo.findById(oid).orElseThrow();
+		Order o = orderRepo.findById(oid).orElseThrow(()->new OrderDoesNotExist());
 		
 		if(o.getStatus() != Status.UNASSIGNED) {
 			throw new CannotChangeTimeSlotException("TIme Slot cannot be changed as order is already " + o.getStatus() );
@@ -134,7 +125,7 @@ public class OrderServiceImpl implements OrderService{
 			throw new ReviewAlreadyExistsException("Review Already Exists!!");
 		}
 		 
-		Order odr = orderRepo.findById(oid).orElseThrow();
+		Order odr = orderRepo.findById(oid).orElseThrow(()->new OrderDoesNotExist());
 		ConsumerReview cf = new ConsumerReview();
 		cf.setDescription(cr.getDescription()); 
 		cf.setRating(cr.getRating());
@@ -150,8 +141,7 @@ public class OrderServiceImpl implements OrderService{
 		
 		Order newOdr = new Order();
 		
-	
-		Consumer c = consumerRepo.findById(reqOdr.getConsumerId()).orElseThrow();
+		Consumer c = consumerRepo.findById(reqOdr.getConsumerId()).orElseThrow(() -> new ConsumerNotFoundException());
 		
 		HouseholdService s = serviceRepo.findById(reqOdr.getServiceId()).orElseThrow();
 		
@@ -164,10 +154,8 @@ public class OrderServiceImpl implements OrderService{
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
 		newOdr.setStatus(reqOdr.getStatus());
 		newOdr.setPriority(reqOdr.getPriority());
-		
-		orderRepo.save(newOdr);
-		
-		return newOdr;
+
+		return orderRepo.save(newOdr);
 	}
 
 //	@Override

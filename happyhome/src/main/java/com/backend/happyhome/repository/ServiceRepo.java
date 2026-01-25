@@ -6,5 +6,4 @@ import com.backend.happyhome.entities.HouseholdService;
 
 public interface ServiceRepo extends JpaRepository<HouseholdService, Long> {
 
-	
 }

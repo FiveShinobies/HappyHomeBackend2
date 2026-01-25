@@ -32,7 +32,6 @@ public class PlaceOrderDTOA {
 	@NotNull
 	private Double orderPrice;
 	
-	
 	private Status status = Status.UNASSIGNED;
 	
 	private Priority priority = Priority.NORMAL;
