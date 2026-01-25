@@ -49,19 +49,19 @@ public class Order {
 	
 	//one to one mappings ------------------------------------------------------------------------------------------
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="consumer_transaction_id")
+	@JoinColumn(name="consumer_transaction_id",nullable = false)
 	private ConsumerTransaction myConsumerTransaction;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="admin_transaction_id")
+	@JoinColumn(name="admin_transaction_id",nullable = false)
 	private AdminTransaction myAdminTransaction;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="consumer_review_id")
+	@JoinColumn(name="consumer_review_id",nullable = false)
 	private ConsumerReview myConsumerReview;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="vendor_review_id")
+	@JoinColumn(name="vendor_review_id",nullable = false)
 	private VendorReview myVendorReview;
 	//-----------------------------------------------------------------------------------------------------------------
 	

@@ -46,6 +46,8 @@ public class OrderServiceImpl implements OrderService{
 
 	private final OrderRepo orderRepo;
 	
+  private final OrderRepo orderRepo;
+	
 	private final ConsumerReviewRepo crRepo;
 	
 	private final ConsumerRepo consumerRepo;
