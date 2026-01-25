@@ -44,9 +44,8 @@ public class ConsumerTransaction {
 	@Column(name = "amount", nullable = false)
 	private Double amount;
 	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "payment_method", nullable = false)
-	private Payment paymentMethod;
+	@Column(name = "payment_id", nullable = false)
+	private String paymentId;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
