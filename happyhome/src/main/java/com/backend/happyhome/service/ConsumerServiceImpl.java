@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
+import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerDtoC;
 import com.backend.happyhome.dtos.ConsumerProfileDetailsDTOA;
 import com.backend.happyhome.entities.Address;
@@ -79,7 +80,16 @@ public class ConsumerServiceImpl implements ConsumerService {
 		dto.setLanguages(u.getLanguages());
 		dto.setUserStatus(u.getUserStatus());
 		dto.setRewardPoints(c.getRewardPoints());
-		dto.setAddress(addressRepo.findById(u.getUserId()).get());
+		
+		AddressDto ad = new AddressDto();
+		Address address = addressRepo.findByMyUser(u);
+		ad.setCity(address.getCity());
+		ad.setHomeNo(address.getHomeNo());
+		ad.setPincode(address.getPincode());
+		ad.setState(address.getState());
+		ad.setTown(address.getTown());
+		
+		dto.setAddress(ad);
 		
 		return dto;
 	}
@@ -104,9 +114,16 @@ public class ConsumerServiceImpl implements ConsumerService {
 		c.setRewardPoints(dto.getRewardPoints());
 		consumerRepo.save(c);
 		
-		Address address = dto.getAddress();
-		addressRepo.save(address);
+		AddressDto address = dto.getAddress();
 		
+		Address ad = new Address();
+		ad.setCity(address.getCity());
+		ad.setHomeNo(address.getHomeNo());
+		ad.setPincode(address.getPincode());
+		ad.setState(address.getState());
+		ad.setTown(address.getTown());
+		
+		addressRepo.save(ad);
 		return dto;
 	}
 

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,7 +39,7 @@ public class Vendor {
 	@Column(name = "experience", nullable = false)
 	private Integer experience;
 
-	@ManyToMany
+	@ManyToMany(cascade=CascadeType.ALL)
 	@JoinTable(name = "vendor_service" , joinColumns = @JoinColumn(name = "vendor_id") , inverseJoinColumns = @JoinColumn(name = "service_id"))
 	private Set<HouseholdService> myServices = new HashSet<>();
 	

@@ -39,7 +39,7 @@ public class HouseholdService {
 	@Column(name="service_id")
 	private Long serviceId;
 
-	@Column(name="service_name",nullable = false)
+	@Column(name="service_name",nullable = false, unique = true)
 	private String serviceName;
 	
 	@Column(name="short_desc",nullable = false)

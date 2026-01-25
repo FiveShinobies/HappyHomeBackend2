@@ -1,5 +1,17 @@
 package com.backend.happyhome.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
+import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.entities.Address;
+import com.backend.happyhome.entities.Consumer;
+import com.backend.happyhome.entities.Order;
+import com.backend.happyhome.entities.enums.Status;
+import com.backend.happyhome.repository.OrderRepo;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -53,8 +65,16 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public List<OrderDtoC> getOngoingOrders() {
-		return orderRepo.findByStatus(Status.INPROGRESS);
+	public OrderDtoC getOngoingOrders(Long oId) {
+		Order o = orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
+		OrderDtoC oD = new OrderDtoC();
+		oD.setAddress(o.getOrderAddress());
+		oD.setMyVendor(o.getMyVendor());
+		oD.setPrice(o.getOrderPrice());
+		oD.setPriority(o.getPriority());
+		oD.setTimeSlot(o.getTimeSlot());
+		
+		return oD;
 	}
 	
 	public Address getAddress(Long oId) {
@@ -149,7 +169,7 @@ public class OrderServiceImpl implements OrderService{
 		
 		newOdr.setMyConsumer(c);
 		newOdr.setMyServices(s);
-		newOdr.setMyAddress(a);
+		newOdr.setOrderAddress(a);
 		newOdr.setOrderDateTime(reqOdr.getTimeSlot());
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
 		newOdr.setStatus(reqOdr.getStatus());
@@ -157,45 +177,5 @@ public class OrderServiceImpl implements OrderService{
 
 		return orderRepo.save(newOdr);
 	}
-
-//	@Override
-//	public com.backend.happyhome.service.Order changeTimeSlot(Long oid,
-//			com.backend.happyhome.service.LocalDateTime updatedTime) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.ConsumerReview addConsumerReviewForAnOrder(Long oid,
-//			com.backend.happyhome.service.ConsumerReviewDTOA cr) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.Order addOrder(com.backend.happyhome.service.PlaceOrderDTOA newOrder) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.Order changeTimeSlot(Long oid,
-//			com.backend.happyhome.service.LocalDateTime updatedTime) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.ConsumerReview addConsumerReviewForAnOrder(Long oid,
-//			com.backend.happyhome.service.ConsumerReviewDTOA cr) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.Order addOrder(com.backend.happyhome.service.PlaceOrderDTOA newOrder) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
 }
