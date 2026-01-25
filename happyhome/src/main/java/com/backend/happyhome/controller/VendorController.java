@@ -13,29 +13,18 @@ import com.backend.happyhome.dtos.VendorBankingResponseDTOE;
 import com.backend.happyhome.dtos.VendorEditProfileRequestDTOE;
 import com.backend.happyhome.dtos.VendorFeedbackRequestDTOE;
 import com.backend.happyhome.dtos.VendorProfileResponseDTOE;
-import com.backend.happyhome.entities.VendorReview;
 import com.backend.happyhome.service.VendorAddressService;
 import com.backend.happyhome.service.VendorBankingService;
 import com.backend.happyhome.service.VendorDetailsService;
 import com.backend.happyhome.service.VendorEditProfileService;
 import com.backend.happyhome.service.VendorReviewService;
-import com.backend.happyhome.service.VendorService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.happyhome.dtos.OrderDtoC;
-import com.backend.happyhome.dtos.VendorAddressResponseDTOE;
 import com.backend.happyhome.service.OrderService;
-import com.backend.happyhome.service.VendorAddressService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -101,7 +90,7 @@ public class VendorController {
 
         return ResponseEntity.ok("Feedback submitted successfully");
     }
-}
+
 	
   	    
 	    @GetMapping("/work")

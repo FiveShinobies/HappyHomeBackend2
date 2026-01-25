@@ -34,7 +34,7 @@ public class VendorBankingServiceImpl implements VendorBankingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Banking details not found"));
 		
 		//to be removed
-		 PaymentUpi upi = paymentUpiRepository.findByMyUserUserId(vendor.getMyUser().getUserId()).get(0);
+//		 PaymentUpi upi = paymentUpiRepository.findByMyUserUserId(vendor.getMyUser().getUserId()).get(0);
 	     
 		 VendorBankingResponseDTOE response = new VendorBankingResponseDTOE();
 		 
@@ -44,9 +44,9 @@ public class VendorBankingServiceImpl implements VendorBankingService {
 	        response.setHolderName(banking.getHolderName());
 	        response.setAccountNo(maskAccountNo(banking.getAccountNo()));
 
-	        if (upi != null) {
-	            response.setUpiId(maskUpi(upi.get(0).getUpiAddress()));
-	        }
+//	        if (upi != null) {
+//	            response.setUpiId(maskUpi(upi.getUpiAddress()));
+//	        }
 
 	        return response;
 	}
