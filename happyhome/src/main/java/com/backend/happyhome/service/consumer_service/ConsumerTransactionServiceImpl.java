@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class ConsumerTransactionServiceImpl implements ConsumerTransactionService {
 
-	ConsumerTransactionRepo ctRepo;
+	private final ConsumerTransactionRepo ctRepo;
 	
 	@Override
 	public ConsumerTransaction addTrasaction(ConsumerTransaction newTran) {

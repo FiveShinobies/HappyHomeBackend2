@@ -1,5 +1,17 @@
 package com.backend.happyhome.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
+import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.entities.Address;
+import com.backend.happyhome.entities.Consumer;
+import com.backend.happyhome.entities.Order;
+import com.backend.happyhome.entities.enums.Status;
+import com.backend.happyhome.repository.OrderRepo;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,7 +47,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService{
 
-	private final OrderRepo orderRepo2;
+	private final OrderRepo orderRepo;
 	
 	private final ConsumerReviewRepo crRepo;
 	
@@ -157,7 +169,7 @@ public class OrderServiceImpl implements OrderService{
 		
 		newOdr.setMyConsumer(c);
 		newOdr.setMyServices(s);
-		newOdr.setMyAddress(a);
+		newOdr.setOrderAddress(a);
 		newOdr.setOrderDateTime(reqOdr.getTimeSlot());
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
 		newOdr.setStatus(reqOdr.getStatus());

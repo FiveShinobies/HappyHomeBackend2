@@ -48,3 +48,4 @@ public class UserController {
 		return new ResponseEntity<String>("Vendor Added",HttpStatus.CREATED);
 	}
 }
+
