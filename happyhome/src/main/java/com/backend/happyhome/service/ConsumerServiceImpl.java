@@ -1,5 +1,6 @@
 package com.backend.happyhome.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -61,8 +62,37 @@ public class ConsumerServiceImpl implements ConsumerService {
 	private final LanguageRepo langRepo;
 
 	@Override
-	public List<Consumer> getAllConsumers() {
-		return userRepo.findByRole(UserRole.CONSUMER);
+	public List<ConsumerDtoC> getAllConsumers() {
+		List<User> users = userRepo.findByRole(UserRole.CONSUMER);
+		List<ConsumerDtoC> result = new ArrayList<>();
+		for(User u : users) {
+			ConsumerDtoC dto = new ConsumerDtoC();
+			dto.setFirstName(u.getFirstName());
+			dto.setLastName(u.getLastName());
+			dto.setEmail(u.getEmail());
+			dto.setPassword(u.getPassword());
+			dto.setPhone(u.getPhone());
+			dto.setDob(u.getDob());
+			dto.setUserStatus(u.getUserStatus());
+			for(Language lang : u.getLanguages()) {
+				dto.getLanguages().add(lang.getLangName());
+			}
+			dto.setRewardPoints(consumerRepo.findByMyUser_UserId(u.getUserId()).getRewardPoints());
+			
+			AddressDto ad = new AddressDto();
+			Address address = addressRepo.findByMyUser(u);
+			ad.setCity(address.getCity());
+			ad.setHomeNo(address.getHomeNo());
+			ad.setPincode(address.getPincode());
+			ad.setState(address.getState());
+			ad.setTown(address.getTown());
+			
+			dto.setAddress(ad);
+			
+			result.add(dto);
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -77,9 +107,12 @@ public class ConsumerServiceImpl implements ConsumerService {
 		dto.setPassword(u.getPassword());
 		dto.setPhone(u.getPhone());
 		dto.setDob(u.getDob());
-		dto.setLanguages(u.getLanguages());
 		dto.setUserStatus(u.getUserStatus());
 		dto.setRewardPoints(c.getRewardPoints());
+		
+		for(Language lang : u.getLanguages()) {
+			dto.getLanguages().add(lang.getLangName());
+		}
 		
 		AddressDto ad = new AddressDto();
 		Address address = addressRepo.findByMyUser(u);
@@ -103,7 +136,9 @@ public class ConsumerServiceImpl implements ConsumerService {
 		user.setDob(dto.getDob());
 		user.setEmail(dto.getEmail());
 		user.setFirstName(dto.getFirstName());
-		user.setLanguages(dto.getLanguages());
+		for(Language lang : user.getLanguages()) {
+			dto.getLanguages().add(lang.getLangName());
+		}
 		user.setLastName(dto.getLastName());
 		user.setPassword(dto.getPassword());
 		user.setPhone(dto.getPhone());
@@ -122,6 +157,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 		ad.setPincode(address.getPincode());
 		ad.setState(address.getState());
 		ad.setTown(address.getTown());
+		ad.setMyUser(user);
 		
 		addressRepo.save(ad);
 		return dto;

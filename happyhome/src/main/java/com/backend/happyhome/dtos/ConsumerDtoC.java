@@ -19,7 +19,7 @@ public class ConsumerDtoC {
 	private String password;
 	private LocalDate dob;
 	private UserStatus userStatus;
-	private Set<Language> languages = new HashSet<>();
+	private Set<String> languages = new HashSet<>();
 	private int rewardPoints;
 	private AddressDto address;
 }

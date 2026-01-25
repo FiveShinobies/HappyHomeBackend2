@@ -53,8 +53,7 @@ public class VendorController {
 	ResponseEntity<Address> getAddressOfOrder(@PathVariable Long oId){
 		return new ResponseEntity<>(vendorService.getAddressOfOrder(oId),HttpStatus.OK);
 	}
-	 	
-
+	  	
     //  Get Vendor Profile 
     @GetMapping("/{vendorId}/profile")
     public ResponseEntity<VendorProfileResponseDTOE> getVendorProfile(
