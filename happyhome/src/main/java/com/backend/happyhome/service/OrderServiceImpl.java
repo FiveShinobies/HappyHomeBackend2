@@ -149,7 +149,7 @@ public class OrderServiceImpl implements OrderService{
 		
 		newOdr.setMyConsumer(c);
 		newOdr.setMyServices(s);
-		newOdr.setMyAddress(a);
+		newOdr.setOrderAddress(a);
 		newOdr.setOrderDateTime(reqOdr.getTimeSlot());
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
 		newOdr.setStatus(reqOdr.getStatus());
