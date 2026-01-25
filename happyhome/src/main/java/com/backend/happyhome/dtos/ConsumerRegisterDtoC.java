@@ -17,5 +17,6 @@ public class ConsumerRegisterDtoC {
 	private String phone;
 	private LocalDate dob;
 	private AddressDto address;
+//	private Address address;   ---> delete this
 	
 }

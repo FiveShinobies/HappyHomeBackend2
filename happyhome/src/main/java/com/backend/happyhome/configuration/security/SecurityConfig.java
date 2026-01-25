@@ -37,7 +37,7 @@ public class SecurityConfig {
                 ).permitAll()
 
                 // 🔒 EVERYTHING ELSE
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
 
             // ❌ Disable default login page redirect
