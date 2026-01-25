@@ -24,7 +24,7 @@ public class Address {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User myUser;
 	
-	@Column(name = "home_no", length = 10)
+	@Column(name = "home_no", length = 100)
 	private String homeNo;
 	
 	@Column(name = "town", length = 100)

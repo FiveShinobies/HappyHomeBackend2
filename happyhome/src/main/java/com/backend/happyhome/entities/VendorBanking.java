@@ -25,6 +25,9 @@ public class VendorBanking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "banking_id")
     private Long bankingId;
+    
+    @Column(name = "ifsc_code")
+    private String ifscCode;
 
     @Column(name = "account_no", nullable = false, unique = true)
     private String accountNo;
