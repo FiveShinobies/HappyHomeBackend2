@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService{
 
-	private final OrderRepo orderRepo2;
+	private final OrderRepo orderRepo;
 	
 	private final ConsumerReviewRepo crRepo;
 	
