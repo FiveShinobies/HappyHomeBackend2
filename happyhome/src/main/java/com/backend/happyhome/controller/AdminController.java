@@ -60,6 +60,16 @@ public class AdminController {
 
 		return ResponseEntity.ok(adminVendorService.getVendorDetailsById(vendorId));
 	}
+	    // Get all vendors
+	    @GetMapping("/vendors")
+	    public ResponseEntity<List<VendorSummaryDTOE>> getAllVendors() {
+	        return ResponseEntity.ok(adminVendorService.getAllVendors());
+	    }
+
+	    //  Get vendor details by ID
+	    @GetMapping("/vendors/{vendorId}")
+	    public ResponseEntity<VendorDetailsAdminDTOE> getVendorDetailsById(
+	            @PathVariable Long vendorId) {
 
 	// Edit vendor details
 	@PatchMapping("/vendors/{vendorId}")
@@ -69,6 +79,11 @@ public class AdminController {
 		adminVendorService.editVendorDetails(vendorId, request);
 		return ResponseEntity.ok("Vendor updated successfully");
 	}
+	    //  Edit vendor details 
+	    @PatchMapping("/vendors/{vendorId}")
+	    public ResponseEntity<String> editVendorDetails(
+	            @PathVariable Long vendorId,
+	            @RequestBody AdminEditVendorRequestDTOE request) {
 
 	// Get vendor orders
 	@GetMapping("/vendors/{vendorId}/orders")
@@ -76,6 +91,10 @@ public class AdminController {
 
 		return ResponseEntity.ok(adminVendorService.getVendorOrders(vendorId));
 	}
+	    // Get vendor orders
+	    @GetMapping("/vendors/{vendorId}/orders")
+	    public ResponseEntity<List<AdminOrderDetailsDTOE>> getVendorOrders(
+	            @PathVariable Long vendorId) {
 
 	@GetMapping("/services")
 	public ResponseEntity<List<HouseholdServicesListDTOB>> getAllServices() {

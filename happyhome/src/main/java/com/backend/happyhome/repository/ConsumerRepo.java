@@ -8,4 +8,6 @@ import com.backend.happyhome.entities.Consumer;
 @Repository
 public interface ConsumerRepo extends JpaRepository<Consumer, Long> {
 
+	Consumer findByMyUser_UserId(Long userId);
+
 }

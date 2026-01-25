@@ -11,7 +11,7 @@ import com.backend.happyhome.entities.Order;
 
 public interface ConsumerService {
 
-	List<Consumer> getAllConsumers();
+	List<ConsumerDtoC> getAllConsumers();
 	ConsumerDtoC getConsumerDetailsById(Long cId);
 	ConsumerDtoC editConsumerDetails(ConsumerDtoC dto,Long cId);
 	List<Order> getAllOrdersOfConsumer(Long cId);

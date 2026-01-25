@@ -41,7 +41,10 @@ public class UserServiceImpl implements UserService {
 	public User isUserPresent(UserLoginDtoC user) throws UserNotPresentException{
 		
 		User userFromDb = userRepo.getByEmail(user.getEmail()).orElseThrow(()->new UserNotPresentException());
-		return userFromDb;
+		if(userFromDb.getPassword().equals(user.getPassword()))
+			return userFromDb;
+		else
+			return null;
 	}
 
 	@Override
