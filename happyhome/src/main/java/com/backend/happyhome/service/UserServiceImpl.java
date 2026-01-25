@@ -37,8 +37,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void registerConsumerUser(ConsumerRegisterDtoC user) throws UserAlreadyPresentException {
 		// TODO Auto-generated method stub
-		userRepo.getByEmail(user.getEmail()).orElseThrow(()-> new UserAlreadyPresentException());
-		userRepo.getByPhone(user.getPhone()).orElseThrow(()->new UserAlreadyPresentException());
+		if(userRepo.getByEmail(user.getEmail()).orElse(null) != null || userRepo.getByPhone(user.getPhone()).orElse(null) != null) 
+		{;
+			throw new UserAlreadyPresentException();
+		}
+
 		
 		User userToDb = new User();
 		userToDb.setFirstName(user.getFirstName());
@@ -59,8 +62,10 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	public void registerVendorUser(VendorRegisterDtoC user) throws UserAlreadyPresentException{
-		userRepo.getByEmail(user.getEmail()).orElseThrow(()-> new UserAlreadyPresentException());
-		userRepo.getByPhone(user.getPhone()).orElseThrow(()->new UserAlreadyPresentException());
+		if(userRepo.getByEmail(user.getEmail()).orElse(null) != null || userRepo.getByPhone(user.getPhone()).orElse(null) != null) 
+		{;
+			throw new UserAlreadyPresentException();
+		}
 		
 		User userToDb = new User();
 		userToDb.setFirstName(user.getFirstName());

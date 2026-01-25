@@ -35,8 +35,7 @@ public class VendorController {
 	                vendorAddressService.getVendorAddress(vendorId)
 	        );
 	    }
-	
-	    
+		    
 	    @GetMapping("/work")
 	    public ResponseEntity<List<OrderDtoC>> sendWorkNOtification(){
 
@@ -47,7 +46,7 @@ public class VendorController {
 	    
 	    @PostMapping("/work")
 	    public ResponseEntity<?> acceptWork(@RequestBody Long vendorId , @RequestBody Long orderId){
-	    	
+	   
 	    	return ResponseEntity.ok(null);
 	    }
 	    
