@@ -3,7 +3,6 @@ package com.backend.happyhome.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.dtos.OrderDtoC;
@@ -47,7 +46,6 @@ public class OrderServiceImpl implements OrderService{
 
 	private final OrderRepo orderRepo;
 	
-  private final OrderRepo orderRepo;
 	
 	private final ConsumerReviewRepo crRepo;
 	

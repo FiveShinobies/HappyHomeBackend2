@@ -1,5 +1,7 @@
 package com.backend.happyhome.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.backend.happyhome.custom_exceptions.ResourceNotFoundException;
@@ -31,9 +33,8 @@ public class VendorBankingServiceImpl implements VendorBankingService {
 		VendorBanking banking = vendorBankingRepository.findByMyVendorVendorId(vendorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Banking details not found"));
 		
-		 PaymentUpi upi = paymentUpiRepository.findByMyUserUserId(vendor.getMyUser().getUserId())
-	                .orElse(null);
-		 
+		List <PaymentUpi> upi = paymentUpiRepository.findByMyUserUserId(vendor.getMyUser().getUserId());
+	                
 		 VendorBankingResponseDTOE response = new VendorBankingResponseDTOE();
 		 
 		 response.setBankName(banking.getBankName());
@@ -43,7 +44,7 @@ public class VendorBankingServiceImpl implements VendorBankingService {
 	        response.setAccountNo(maskAccountNo(banking.getAccountNo()));
 
 	        if (upi != null) {
-	            response.setUpiId(maskUpi(upi.getUpiAddress()));
+	            response.setUpiId(maskUpi(upi.get(0).getUpiAddress()));
 	        }
 
 	        return response;
