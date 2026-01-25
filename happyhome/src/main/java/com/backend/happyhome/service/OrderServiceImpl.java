@@ -36,7 +36,6 @@ import com.backend.happyhome.repository.HouseholdServiceRepo;
 import com.backend.happyhome.repository.OrderRepo;
 import com.backend.happyhome.repository.VendorRepo;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 
@@ -45,7 +44,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService{
 
-	private final OrderRepo orderRepo;
+	private final OrderRepo orderRepo2;
 	
   private final OrderRepo orderRepo;
 	

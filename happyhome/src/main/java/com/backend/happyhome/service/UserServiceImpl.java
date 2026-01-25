@@ -1,6 +1,5 @@
 package com.backend.happyhome.service;
 
-
 import org.springframework.stereotype.Service;
 
 import com.backend.happyhome.dtos.UserLoginDtoC;
@@ -8,25 +7,25 @@ import com.backend.happyhome.dtos.VendorRegisterDtoC;
 import com.backend.happyhome.custom_exceptions.UserAlreadyPresentException;
 import com.backend.happyhome.custom_exceptions.UserNotPresentException;
 import com.backend.happyhome.dtos.ConsumerRegisterDtoC;
+import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.User;
 import com.backend.happyhome.entities.Vendor;
 import com.backend.happyhome.entities.enums.UserRole;
+import com.backend.happyhome.repository.ConsumerRepo;
 import com.backend.happyhome.repository.UserRepo;
 import com.backend.happyhome.repository.VendorRepo;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
 	private final UserRepo userRepo;
 	private final VendorRepo vendorRepo;
-	
-	public UserServiceImpl(UserRepo userRepo, VendorRepo vendorRepo) {
-		this.userRepo = userRepo;
-		this.vendorRepo = vendorRepo;
-	}
+	private final ConsumerRepo consumerRepo;
 	
 	@Override
 	public User isUserPresent(UserLoginDtoC user) throws UserNotPresentException{
@@ -50,8 +49,13 @@ public class UserServiceImpl implements UserService {
 		userToDb.setPhone(user.getPhone());
 		userToDb.setRole(UserRole.CONSUMER);
 		
-		userRepo.save(userToDb);
+		User u = userRepo.save(userToDb);
 		
+		Consumer consumer = new Consumer();
+		consumer.setMyUser(u);
+		consumer.setRewardPoints(0);
+		
+		consumerRepo.save(consumer);
 	}
 	
 	public void registerVendorUser(VendorRegisterDtoC user) throws UserAlreadyPresentException{
@@ -67,9 +71,10 @@ public class UserServiceImpl implements UserService {
 		userToDb.setPhone(user.getPhone());
 		userToDb.setRole(UserRole.VENDOR);
 		
-		userRepo.save(userToDb);
+		User u = userRepo.save(userToDb);
 		
 		Vendor vendor = new Vendor();
+		vendor.setMyUser(u);
 		vendor.setAadharNo(user.getAadhardNo());
 		vendor.setPanNo(user.getPanNo());
 		vendor.setExperience(user.getExperience());
