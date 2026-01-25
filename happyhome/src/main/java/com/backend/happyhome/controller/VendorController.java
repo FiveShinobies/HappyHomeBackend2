@@ -22,18 +22,33 @@ import com.backend.happyhome.service.VendorReviewService;
 import com.backend.happyhome.service.VendorService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.dtos.VendorAddressResponseDTOE;
+import com.backend.happyhome.service.OrderService;
+import com.backend.happyhome.service.VendorAddressService;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/vendor")
 @RequiredArgsConstructor
 public class VendorController {
-	private final VendorDetailsService vendorDetailsService;
+  	private final VendorDetailsService vendorDetailsService;
     private final VendorEditProfileService vendorEditProfileService;
     private final VendorBankingService vendorBankingService;
     private final VendorAddressService vendorAddressService;
     private final VendorReviewService vendorReviewService;
-
+    private final OrderService orderService;
     //  Get Vendor Profile 
     @GetMapping("/{vendorId}/profile")
     public ResponseEntity<VendorProfileResponseDTOE> getVendorProfile(
@@ -87,3 +102,22 @@ public class VendorController {
         return ResponseEntity.ok("Feedback submitted successfully");
     }
 }
+	
+  	    
+	    @GetMapping("/work")
+	    public ResponseEntity<List<OrderDtoC>> sendWorkNOtification(){
+
+	    	List<OrderDtoC> luo =  orderService.getIncomingOrderRequest();
+	    	
+	    	return ResponseEntity.ok(luo);
+	    }
+	    
+	    @PostMapping("/work")
+	    public ResponseEntity<?> acceptWork(@RequestBody Long vendorId , @RequestBody Long orderId){
+	    //to be completed
+	    	return ResponseEntity.ok(null);
+	    }
+	    
+	    
+}
+
