@@ -64,8 +64,16 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public List<OrderDtoC> getOngoingOrders() {
-		return orderRepo.findByStatus(Status.INPROGRESS);
+	public OrderDtoC getOngoingOrders(Long oId) {
+		Order o = orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
+		OrderDtoC oD = new OrderDtoC();
+		oD.setAddress(o.getMyAddress());
+		oD.setMyVendor(o.getMyVendor());
+		oD.setPrice(o.getOrderPrice());
+		oD.setPriority(o.getPriority());
+		oD.setTimeSlot(o.getTimeSlot());
+		
+		return oD;
 	}
 	
 	public Address getAddress(Long oId) {
