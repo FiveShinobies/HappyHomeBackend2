@@ -67,6 +67,8 @@ public class ConsumerBookingServiceImpl implements ConsumerBookingService {
 		consumerDetails.setName(user.getFirstName().concat(" ").concat(user.getLastName()));
 		consumerDetails.setPhone(user.getPhone());
 		consumerDetails.setEmail(user.getEmail());
+		
+		
 		//setting Consumer details with addresses
 		consumerDetailsforBooking.setConsumer(consumerDetails);
 		consumerDetailsforBooking.setAddresses(addresses);

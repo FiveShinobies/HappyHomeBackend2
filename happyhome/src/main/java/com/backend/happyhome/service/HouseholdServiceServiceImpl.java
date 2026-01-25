@@ -58,7 +58,7 @@ public class HouseholdServiceServiceImpl implements HouseholdServiceService {
 		List<ConsumerReview> reviewsForAService = new ArrayList<>();
 		
 		//getting list of services 
-		List<HouseholdService> services = householdServiceRepo.findAll();
+		List<HouseholdService> services = householdServiceRepo.findByActiveTrue();
 		
 		//All reviews
 		List<ConsumerReview> consumerReviews = serviceReviewRepo.findAll();
@@ -102,7 +102,9 @@ public class HouseholdServiceServiceImpl implements HouseholdServiceService {
 		
 		
 		//getting the services details by ID
-		HouseholdService householdService =  householdServiceRepo.findById(serviceId).orElseThrow(()-> new ServiceNotFoundException("Service Not found with id: "+ serviceId));
+		HouseholdService householdService =  householdServiceRepo.findByServiceIdAndActiveTrue(serviceId)
+				.orElseThrow(()-> 
+				new ServiceNotFoundException("Service Not found with id: "+ serviceId));
 	
 		
 		//Images for the specific Service
