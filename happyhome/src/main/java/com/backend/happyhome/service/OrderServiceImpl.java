@@ -61,14 +61,14 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Override
 	public List<OrderDtoC> getIncomingOrderRequest() {
-		return orderRepo2.findByStatus(Status.UNASSIGNED);
+		return orderRepo.findByStatus(Status.UNASSIGNED);
 	}
 
 	@Override
 	public OrderDtoC getOngoingOrders(Long oId) {
-		Order o = orderRepo2.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
+		Order o = orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
 		OrderDtoC oD = new OrderDtoC();
-		oD.setAddress(o.getMyAddress());
+		oD.setAddress(o.getOrderAddress());
 		oD.setMyVendor(o.getMyVendor());
 		oD.setPrice(o.getOrderPrice());
 		oD.setPriority(o.getPriority());
@@ -78,21 +78,21 @@ public class OrderServiceImpl implements OrderService{
 	}
 	
 	public Address getAddress(Long oId) {
-		Order order = orderRepo2.findById(oId).orElseThrow(()->new OrderDoesNotExist());
+		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
 		
 		return order.getOrderAddress();
 	}
 
 	@Override
 	public Consumer getConsumer(Long oId) {
-		Order order = orderRepo2.findById(oId).orElseThrow(()->new OrderDoesNotExist());
+		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
 		
 		return order.getMyConsumer();
 	}
 
 	@Override
 	public boolean updateStatusToInProgress(Long oId) {
-		Order order = orderRepo2.findById(oId).orElseThrow(()->new OrderDoesNotExist());
+		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
 		
 		order.setStatus(Status.INPROGRESS);
 		
@@ -101,7 +101,7 @@ public class OrderServiceImpl implements OrderService{
 
 	@Override
 	public boolean updateStatusToCompleted(Long oId) {
-		Order order = orderRepo2.findById(oId).orElseThrow(()->new OrderDoesNotExist());
+		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
 		
 		order.setStatus(Status.COMPLETED);
 		
@@ -110,12 +110,12 @@ public class OrderServiceImpl implements OrderService{
 		
 	@Override
 	public List<Order> getOrdersByConsumerId(Long cid) {
-		return orderRepo2.findByMyConsumerConsumerId(cid);
+		return orderRepo.findByMyConsumerConsumerId(cid);
 	}
 
 	@Override
 	public Order getOrderDetailsById(Long oid) {
-		return orderRepo2.findById(oid).orElse(null);
+		return orderRepo.findById(oid).orElse(null);
 	}
 
 	
@@ -123,21 +123,21 @@ public class OrderServiceImpl implements OrderService{
 	public Order changeTimeSlot( Long oid , LocalDateTime updatedTime) {
 		
 		
-		Order o = orderRepo2.findById(oid).orElseThrow(()->new OrderDoesNotExist());
+		Order o = orderRepo.findById(oid).orElseThrow(()->new OrderDoesNotExist());
 		
 		if(o.getStatus() != Status.UNASSIGNED) {
 			throw new CannotChangeTimeSlotException("TIme Slot cannot be changed as order is already " + o.getStatus() );
 		}
 		
 		o.setOrderDateTime(updatedTime);
-		orderRepo2.save(o);
+		orderRepo.save(o);
 		return o;
 	}
 
 	@Override
 	public ConsumerReview addConsumerReviewForAnOrder(Long oid, ConsumerReviewDTOA cr) {
 		
-		if(orderRepo2.findById(oid).orElse(null) == null ) {
+		if(orderRepo.findById(oid).orElse(null) == null ) {
 			throw new OrderDoesNotExistException("Order Does not Exist!!");
 		}
 		
@@ -145,7 +145,7 @@ public class OrderServiceImpl implements OrderService{
 			throw new ReviewAlreadyExistsException("Review Already Exists!!");
 		}
 		 
-		Order odr = orderRepo2.findById(oid).orElseThrow(()->new OrderDoesNotExist());
+		Order odr = orderRepo.findById(oid).orElseThrow(()->new OrderDoesNotExist());
 		ConsumerReview cf = new ConsumerReview();
 		cf.setDescription(cr.getDescription()); 
 		cf.setRating(cr.getRating());
@@ -175,7 +175,7 @@ public class OrderServiceImpl implements OrderService{
 		newOdr.setStatus(reqOdr.getStatus());
 		newOdr.setPriority(reqOdr.getPriority());
 
-		return orderRepo2.save(newOdr);
+		return orderRepo.save(newOdr);
 	}
 
 //	@Override

@@ -46,6 +46,10 @@ public class VendorController {
 	private final VendorAddressService vendorAddressService;
 	private final OrderService orderService;
 	private final VendorService vendorService;
+  	private final VendorDetailsService vendorDetailsService;
+    private final VendorEditProfileService vendorEditProfileService;
+    private final VendorBankingService vendorBankingService;
+    private final VendorReviewService vendorReviewService;
 	
 	@GetMapping
 	ResponseEntity<List<OrderDtoC>> getIncomingRequest(){
@@ -73,18 +77,7 @@ public class VendorController {
 	ResponseEntity<Address> getAddressOfOrder(@PathVariable Long oId){
 		return new ResponseEntity<>(vendorService.getAddressOfOrder(oId),HttpStatus.OK);
 	}
-	
-	  
-	    @GetMapping("/{vendorId}/address")
-	    public ResponseEntity<VendorAddressResponseDTOE> getVendorAddress(
-	            @PathVariable Long vendorId) {
-	    	
-  	private final VendorDetailsService vendorDetailsService;
-    private final VendorEditProfileService vendorEditProfileService;
-    private final VendorBankingService vendorBankingService;
-    private final VendorAddressService vendorAddressService;
-    private final VendorReviewService vendorReviewService;
-    private final OrderService orderService;
+	  	
     //  Get Vendor Profile 
     @GetMapping("/{vendorId}/profile")
     public ResponseEntity<VendorProfileResponseDTOE> getVendorProfile(
