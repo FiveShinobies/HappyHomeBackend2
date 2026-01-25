@@ -7,6 +7,8 @@ import com.backend.happyhome.entities.enums.TransactionStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,9 +44,11 @@ public class AdminTransaction {
 	@Column(name = "amount", nullable = false)
 	private Double amount;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "payment_method", nullable = false)
 	private Payment paymentMethod;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private TransactionStatus status;
 	
