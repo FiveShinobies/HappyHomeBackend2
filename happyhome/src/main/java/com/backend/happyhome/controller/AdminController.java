@@ -9,10 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.happyhome.dtos.CreateServiceRequestDTOB;
 import com.backend.happyhome.dtos.HouseholdServicesListDTOB;
@@ -42,14 +41,12 @@ private final AdminServiceService adminServiceService;
 		return ResponseEntity.ok(householdService.getServiceById(id));
 	}
 	
-	@PostMapping(
-			value = "/service/add",
-			consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping("/service/add")
 	public ResponseEntity<?> createService(
-			@RequestPart("service") CreateServiceRequestDTOB request,
-			@RequestPart(value="images",required = false) MultipartFile[] images){
+			@RequestBody CreateServiceRequestDTOB request)
+			{
 		
-		Long serviceIdLong = adminServiceService.createService(request, images);
+		Long serviceIdLong = adminServiceService.createService(request, null);
 		
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(Map.of(
