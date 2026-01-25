@@ -40,7 +40,7 @@ public class Order {
 	private Consumer myConsumer;
 	
 	@ManyToOne
-	@JoinColumn(name="vendor_id",nullable = false)
+	@JoinColumn(name="vendor_id")
 	private Vendor myVendor;
 	
 	@ManyToOne
@@ -49,19 +49,19 @@ public class Order {
 	
 	//one to one mappings ------------------------------------------------------------------------------------------
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="consumer_transaction_id",nullable = false)
+	@JoinColumn(name="consumer_transaction_id")
 	private ConsumerTransaction myConsumerTransaction;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="admin_transaction_id",nullable = false)
+	@JoinColumn(name="admin_transaction_id")
 	private AdminTransaction myAdminTransaction;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="consumer_review_id",nullable = false)
+	@JoinColumn(name="consumer_review_id")
 	private ConsumerReview myConsumerReview;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="vendor_review_id",nullable = false)
+	@JoinColumn(name="vendor_review_id")
 	private VendorReview myVendorReview;
 	//-----------------------------------------------------------------------------------------------------------------
 	
@@ -88,8 +88,5 @@ public class Order {
 	@JoinColumn(name="address_id", nullable = false)
 	private Address orderAddress;
 	
-	@OneToOne
-	@JoinColumn(name="order_address")
-	private Address myAddress;
 	
 }
