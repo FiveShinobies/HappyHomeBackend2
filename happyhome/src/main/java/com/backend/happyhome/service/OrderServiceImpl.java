@@ -158,4 +158,44 @@ public class OrderServiceImpl implements OrderService{
 		return orderRepo.save(newOdr);
 	}
 
+//	@Override
+//	public com.backend.happyhome.service.Order changeTimeSlot(Long oid,
+//			com.backend.happyhome.service.LocalDateTime updatedTime) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public com.backend.happyhome.service.ConsumerReview addConsumerReviewForAnOrder(Long oid,
+//			com.backend.happyhome.service.ConsumerReviewDTOA cr) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public com.backend.happyhome.service.Order addOrder(com.backend.happyhome.service.PlaceOrderDTOA newOrder) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public com.backend.happyhome.service.Order changeTimeSlot(Long oid,
+//			com.backend.happyhome.service.LocalDateTime updatedTime) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public com.backend.happyhome.service.ConsumerReview addConsumerReviewForAnOrder(Long oid,
+//			com.backend.happyhome.service.ConsumerReviewDTOA cr) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public com.backend.happyhome.service.Order addOrder(com.backend.happyhome.service.PlaceOrderDTOA newOrder) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
 }

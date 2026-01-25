@@ -3,6 +3,8 @@ package com.backend.happyhome.service;
 import java.util.List;
 
 import com.backend.happyhome.dtos.ConsumerDtoC;
+import com.backend.happyhome.entities.Consumer;
+import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.dtos.ConsumerProfileDetailsDTOA;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.Order;
