@@ -38,7 +38,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin/vendors")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
@@ -49,20 +49,20 @@ public class AdminController {
 	private final AdminVendorService adminVendorService;
 
 	// Get all vendors
-	@GetMapping
+	@GetMapping("/vendors")
 	public ResponseEntity<List<VendorSummaryDTOE>> getAllVendors() {
 		return ResponseEntity.ok(adminVendorService.getAllVendors());
 	}
 
 	// Get vendor details by ID
-	@GetMapping("/{vendorId}")
+	@GetMapping("/vendors/{vendorId}")
 	public ResponseEntity<VendorDetailsAdminDTOE> getVendorDetailsById(@PathVariable Long vendorId) {
 
 		return ResponseEntity.ok(adminVendorService.getVendorDetailsById(vendorId));
 	}
 
 	// Edit vendor details
-	@PatchMapping("/{vendorId}")
+	@PatchMapping("/vendors/{vendorId}")
 	public ResponseEntity<String> editVendorDetails(@PathVariable Long vendorId,
 			@RequestBody AdminEditVendorRequestDTOE request) {
 
@@ -71,7 +71,7 @@ public class AdminController {
 	}
 
 	// Get vendor orders
-	@GetMapping("/{vendorId}/orders")
+	@GetMapping("/vendors/{vendorId}/orders")
 	public ResponseEntity<List<AdminOrderDetailsDTOE>> getVendorOrders(@PathVariable Long vendorId) {
 
 		return ResponseEntity.ok(adminVendorService.getVendorOrders(vendorId));
