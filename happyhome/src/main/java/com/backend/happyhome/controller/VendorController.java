@@ -49,9 +49,6 @@ public class VendorController {
 	    public ResponseEntity<?> acceptWork(@RequestBody Long vendorId , @RequestBody Long orderId){
 	    	
 	    	
-	    	
-	    	
-	    	
 	    	return ResponseEntity.ok(null);
 	    }
 	    
