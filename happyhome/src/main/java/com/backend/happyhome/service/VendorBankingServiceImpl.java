@@ -45,7 +45,7 @@ public class VendorBankingServiceImpl implements VendorBankingService {
 	        response.setAccountNo(maskAccountNo(banking.getAccountNo()));
 
 	        if (upi != null) {
-	            response.setUpiId(maskUpi(upi.getUpiAddress()));
+	            response.setUpiId(maskUpi(upi.get(0).getUpiAddress()));
 	        }
 
 	        return response;
