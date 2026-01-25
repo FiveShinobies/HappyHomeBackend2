@@ -1,19 +1,13 @@
 package com.backend.happyhome.controller;
 
 import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,15 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.happyhome.dtos.AdminEditVendorRequestDTOE;
 import com.backend.happyhome.dtos.AdminOrderDetailsDTOE;
-import com.backend.happyhome.dtos.VendorDetailsAdminDTOE;
-import com.backend.happyhome.dtos.VendorSummaryDTOE;
-import com.backend.happyhome.service.AdminVendorService;
 import com.backend.happyhome.dtos.CreateServiceRequestDTOB;
 import com.backend.happyhome.dtos.HouseholdServicesListDTOB;
 import com.backend.happyhome.dtos.ServiceDetailsDTOB;
 import com.backend.happyhome.dtos.ServiceDetailsForEditDTOB;
 import com.backend.happyhome.dtos.UpdateServiceRequestDTOB;
+import com.backend.happyhome.dtos.VendorDetailsAdminDTOE;
+import com.backend.happyhome.dtos.VendorSummaryDTOE;
 import com.backend.happyhome.service.AdminServiceService;
+import com.backend.happyhome.service.AdminVendorService;
 import com.backend.happyhome.service.HouseholdServiceService;
 
 import jakarta.validation.Valid;
@@ -60,16 +54,7 @@ public class AdminController {
 
 		return ResponseEntity.ok(adminVendorService.getVendorDetailsById(vendorId));
 	}
-	    // Get all vendors
-	    @GetMapping("/vendors")
-	    public ResponseEntity<List<VendorSummaryDTOE>> getAllVendors() {
-	        return ResponseEntity.ok(adminVendorService.getAllVendors());
-	    }
-
-	    //  Get vendor details by ID
-	    @GetMapping("/vendors/{vendorId}")
-	    public ResponseEntity<VendorDetailsAdminDTOE> getVendorDetailsById(
-	            @PathVariable Long vendorId) {
+	    
 
 	// Edit vendor details
 	@PatchMapping("/vendors/{vendorId}")
@@ -79,11 +64,7 @@ public class AdminController {
 		adminVendorService.editVendorDetails(vendorId, request);
 		return ResponseEntity.ok("Vendor updated successfully");
 	}
-	    //  Edit vendor details 
-	    @PatchMapping("/vendors/{vendorId}")
-	    public ResponseEntity<String> editVendorDetails(
-	            @PathVariable Long vendorId,
-	            @RequestBody AdminEditVendorRequestDTOE request) {
+
 
 	// Get vendor orders
 	@GetMapping("/vendors/{vendorId}/orders")
@@ -91,10 +72,7 @@ public class AdminController {
 
 		return ResponseEntity.ok(adminVendorService.getVendorOrders(vendorId));
 	}
-	    // Get vendor orders
-	    @GetMapping("/vendors/{vendorId}/orders")
-	    public ResponseEntity<List<AdminOrderDetailsDTOE>> getVendorOrders(
-	            @PathVariable Long vendorId) {
+
 
 	@GetMapping("/services")
 	public ResponseEntity<List<HouseholdServicesListDTOB>> getAllServices() {
