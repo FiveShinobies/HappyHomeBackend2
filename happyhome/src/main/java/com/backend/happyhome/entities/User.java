@@ -20,11 +20,13 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Table(name = "users")
 @Entity
 @Data
+@NoArgsConstructor
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,14 +52,19 @@ public class User {
 	
 	@Enumerated(EnumType.STRING)
 	@NonNull
-	private UserStatus userStatus;
+	private UserStatus userStatus = UserStatus.ACTIVE;
 	
 	@Enumerated(EnumType.STRING)
 	@NonNull
 	private UserRole role;
 
-	@ManyToMany(cascade=CascadeType.ALL)
+	@ManyToMany(cascade= {CascadeType.PERSIST,CascadeType.MERGE})
 	@JoinTable(name = "user_language" , joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="lang_id"))
-	private Set<Language> languages = new HashSet<>();
+	private Set<Language> languages = new HashSet<Language>();
+	{
+		Language lang = new Language();
+		lang.setLangName("English");
+		languages.add(lang);
+	}
 
 }

@@ -40,11 +40,11 @@ public class Order {
 	private Consumer myConsumer;
 	
 	@ManyToOne
-	@JoinColumn(name="vendor_id")
+	@JoinColumn(name="vendor_id",nullable = false)
 	private Vendor myVendor;
 	
 	@ManyToOne
-	@JoinColumn(name="service_id",nullable = false)
+	@JoinColumn(name = "service_id",nullable = false)
 	private HouseholdService myServices;
 	
 	//one to one mappings ------------------------------------------------------------------------------------------
@@ -82,7 +82,14 @@ public class Order {
 	
 	@Column(name="priority")
 	@Enumerated(EnumType.STRING)
-	private Priority priority; 
+	private Priority priority;
 	
+	@OneToOne
+	@JoinColumn(name="address_id", nullable = false)
+	private Address orderAddress;
+	
+	@OneToOne
+	@JoinColumn(name="order_address")
+	private Address myAddress;
 	
 }

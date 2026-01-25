@@ -1,9 +1,7 @@
 package com.backend.happyhome.entities.enums;
 
 public enum Status {
-	NOT_ASSIGNED,
-	ASSIGNED,
-	COMPLETED,
-	CANCELLED, 
-	REFUNDED
+
+	ASSIGNED, UNASSIGNED , INPROGRESS, COMPLETED , CANCELLED , REFUNDED
+
 }
