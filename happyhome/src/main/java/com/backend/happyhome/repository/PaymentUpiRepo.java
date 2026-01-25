@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.backend.happyhome.entities.PaymentUpi;
 
 public interface PaymentUpiRepo extends JpaRepository<PaymentUpi, Long> {
+
 	List<PaymentUpi> findByMyUserUserId(Long uid);
 }
