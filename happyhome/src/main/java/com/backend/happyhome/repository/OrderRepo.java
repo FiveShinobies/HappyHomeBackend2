@@ -23,8 +23,8 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
 
 	List<OrderDtoC> findByStatus(Status status);
 
-	List<OrderDtoC> findByStatus(Status status);
 	List<Order> findByMyConsumer(Consumer myConsumer);
 
 	List<Order> findByMyConsumerConsumerId(Long cid);	
+	
 }
