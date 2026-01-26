@@ -73,9 +73,9 @@ public class PaymentController {
 			 ct.setStatus(TransactionStatus.SUCCESS);
 			 ct.setTimestamp(LocalDateTime.now());
 			
-			 ctService.addTrasaction(ct);
-			 
-			 return ResponseEntity.ok("Order Placed");
+			 com.backend.happyhome.entities.Order odrU = ctService.addTrasaction(ct);
+			 	
+			 return ResponseEntity.ok(odrU);
 			 
 		}else {
 			System.out.println("Verification failed");

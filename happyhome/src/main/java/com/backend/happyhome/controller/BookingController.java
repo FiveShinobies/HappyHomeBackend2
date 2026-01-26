@@ -29,3 +29,5 @@ public class BookingController {
 		
 	}
 }
+
+///booking/form/{consumerId}

@@ -3,11 +3,12 @@ package com.backend.happyhome.dtos;
 import java.time.LocalDate;
 import java.util.Set;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter
-@Setter
+@Data
 public class VendorEditProfileRequestDTOE {
 	
 	private String firstName;

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.happyhome.dtos.AdminEditVendorRequestDTOE;
 import com.backend.happyhome.dtos.AdminOrderDetailsDTOE;
+import com.backend.happyhome.dtos.ConsumerDtoC;
 import com.backend.happyhome.dtos.CreateServiceRequestDTOB;
 import com.backend.happyhome.dtos.HouseholdServicesListDTOB;
 import com.backend.happyhome.dtos.ServiceDetailsDTOB;
@@ -26,6 +27,7 @@ import com.backend.happyhome.dtos.VendorDetailsAdminDTOE;
 import com.backend.happyhome.dtos.VendorSummaryDTOE;
 import com.backend.happyhome.service.AdminServiceService;
 import com.backend.happyhome.service.AdminVendorService;
+import com.backend.happyhome.service.ConsumerService;
 import com.backend.happyhome.service.HouseholdServiceService;
 
 import jakarta.validation.Valid;
@@ -42,6 +44,8 @@ public class AdminController {
 
 	private final AdminVendorService adminVendorService;
 
+	private final ConsumerService consumerService;
+	
 	// Get all vendors
 	@GetMapping("/vendors")
 	public ResponseEntity<List<VendorSummaryDTOE>> getAllVendors() {
@@ -116,5 +120,11 @@ public class AdminController {
 				.body(Map.of("message", "Service updated successfully", "service", serviceId));
 
 	}
+	
+	@GetMapping("/consumer/{id}")
+	ResponseEntity<ConsumerDtoC> getConsumerDetailsById(@PathVariable Long id){
+		return new ResponseEntity<>(consumerService.getConsumerDetailsById(id),HttpStatus.OK);
+	}
+	
 
 }
