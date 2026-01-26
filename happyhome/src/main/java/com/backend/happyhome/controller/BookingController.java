@@ -19,11 +19,11 @@ public class BookingController {
 	private final ConsumerBookingService consumerBookingService;
 	
 	
-	@GetMapping("/form/{consumerId}")
-	public ResponseEntity<ConsumerDetailsForBookingDTOB> getBookingForm(@PathVariable Long consumerId){
+	@GetMapping("/form/{consumerId}/{serviceId}")
+	public ResponseEntity<ConsumerDetailsForBookingDTOB> getBookingForm(@PathVariable Long consumerId , @PathVariable Long serviceId  ){
 		
 		return ResponseEntity.ok(
-				consumerBookingService.getConsumerDetailsForBooking(consumerId)
+				consumerBookingService.getConsumerDetailsForBooking(consumerId , serviceId)
 				);
 		
 		
