@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.dtos.OrderDtoD;
 import com.backend.happyhome.dtos.VendorAddressResponseDTOE;
 import com.backend.happyhome.dtos.VendorBankingResponseDTOE;
 import com.backend.happyhome.dtos.VendorEditProfileRequestDTOE;
@@ -111,9 +112,9 @@ public class VendorController {
 	
   	    
 	    @GetMapping("/work")
-	    public ResponseEntity<List<OrderDtoC>> sendWorkNOtification(){
+	    public ResponseEntity<List<OrderDtoD>> sendWorkNOtification(){
 
-	    	List<OrderDtoC> luo =  orderService.getIncomingOrderRequest();
+	    	List<OrderDtoD> luo =  orderService.getIncomingOrderRequest();
 	    	
 	    	return ResponseEntity.ok(luo);
 	    }
