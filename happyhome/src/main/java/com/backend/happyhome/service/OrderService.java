@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.backend.happyhome.dtos.ConsumerReviewDTOA;
 import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.dtos.OrderDtoD;
 import com.backend.happyhome.dtos.PlaceOrderDTOA;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
@@ -19,7 +20,7 @@ import com.backend.happyhome.entities.Order;
 
 public interface OrderService {
 
-	List<OrderDtoC> getIncomingOrderRequest();
+	List<OrderDtoD> getIncomingOrderRequest();
 	OrderDtoC getOngoingOrders(Long oId);
 	Address getAddress(Long oID);
 	Consumer getConsumer(Long oId);
