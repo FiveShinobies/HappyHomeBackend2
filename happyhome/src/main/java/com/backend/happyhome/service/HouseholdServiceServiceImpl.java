@@ -14,6 +14,7 @@ import com.backend.happyhome.dtos.ServiceReviewDTOB;
 import com.backend.happyhome.entities.ConsumerReview;
 import com.backend.happyhome.entities.HouseholdService;
 import com.backend.happyhome.entities.ServiceImage;
+import com.backend.happyhome.entities.enums.Category;
 import com.backend.happyhome.repository.HouseholdServiceRepo;
 import com.backend.happyhome.repository.ServiceImageRepo;
 import com.backend.happyhome.repository.ServiceReviewRepo;
@@ -68,7 +69,7 @@ public class HouseholdServiceServiceImpl implements HouseholdServiceService {
 			//getting images for specific service
 			List<byte[]> serviceImages = serviceImageRepo.findByMyService(householdService)
 					.stream()
-					.map(ServiceImage::getImage)
+					.map(ServiceImage::getImage) //method reference similar to image - > image.getImage()
 					.toList();
 			
 			
@@ -145,6 +146,29 @@ public class HouseholdServiceServiceImpl implements HouseholdServiceService {
 		 
 		
 		return serviceDetails;
+	}
+
+
+	@Override
+	public List<Category> getCategories() {
+		// TODO Auto-generated method stub
+		
+		return householdServiceRepo.findByCategoryIsNotNull()
+				.stream()
+				.map(HouseholdService::getCategory)
+				.distinct()
+				.toList();
+	}
+
+
+	@Override
+	public List<String> getServicesForCategory(Category category) {
+		// TODO Auto-generated method stub
+		return householdServiceRepo.findByCategory(category)
+				.stream()
+				.map(HouseholdService::getServiceName)
+				.toList();
+				
 	}
 	
 	
