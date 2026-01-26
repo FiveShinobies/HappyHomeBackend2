@@ -188,11 +188,11 @@ public class ConsumerServiceImpl implements ConsumerService {
 		List<Address> adrs = addressRepo.findByMyUserUserId(uid);
 		cpd.setAddresses(adrs);
 		 
-		List<PaymentUpi> upis = upiRepo.findByMyUserUserId(uid);
-		cpd.setUpis(upis);
-		
-		List<PaymentCard> cards = cardRepo.findByMyUserUserId(uid);
-		cpd.setCards(cards);
+//		List<PaymentUpi> upis = upiRepo.findByMyUserUserId(uid);
+//		cpd.setUpis(upis);
+//		
+//		List<PaymentCard> cards = cardRepo.findByMyUserUserId(uid);
+//		cpd.setCards(cards);
 		 
 		UserImage img =  imgRepo.findById(uid).orElse(null) ; 
 		cpd.setImage(img);

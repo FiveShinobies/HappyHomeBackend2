@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.happyhome.custom_exceptions.AddressNotFoundException;
 import com.backend.happyhome.custom_exceptions.CannotChangeTimeSlotException;
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
+import com.backend.happyhome.custom_exceptions.ConsumerTransactionDNE;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExistException;
 import com.backend.happyhome.custom_exceptions.ReviewAlreadyExistsException;
@@ -19,6 +20,7 @@ import com.backend.happyhome.dtos.PlaceOrderDTOA;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.ConsumerReview;
+import com.backend.happyhome.entities.ConsumerTransaction;
 import com.backend.happyhome.entities.HouseholdService;
 import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.entities.enums.Status;
@@ -27,6 +29,7 @@ import com.backend.happyhome.repository.ConsumerRepo;
 import com.backend.happyhome.repository.ConsumerReviewRepo;
 import com.backend.happyhome.repository.HouseholdServiceRepo;
 import com.backend.happyhome.repository.OrderRepo;
+import com.backend.happyhome.repository.consumer_repos.ConsumerTransactionRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,6 +48,8 @@ public class OrderServiceImpl implements OrderService{
 	private final HouseholdServiceRepo serviceRepo;
 	
 	private final AddressRepo addressRepo; 
+	
+	private final ConsumerTransactionRepo ctRepo;
 	
 	@Override
 	public List<OrderDtoC> getIncomingOrderRequest() {
@@ -170,16 +175,17 @@ public class OrderServiceImpl implements OrderService{
 		HouseholdService s = serviceRepo.findById(reqOdr.getServiceId()).orElseThrow();
 		
 		Address a = addressRepo.findById(reqOdr.getAddressId()).orElseThrow() ;
-		
+				
 		newOdr.setMyConsumer(c);
 		newOdr.setMyServices(s);
 		newOdr.setOrderAddress(a);
 		newOdr.setTimeSlot(reqOdr.getTimeSlot());
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
-		newOdr.setStatus(reqOdr.getStatus());
+		newOdr.setStatus(Status.UNASSIGNED);
 		newOdr.setPriority(reqOdr.getPriority());
-
+		
 		return orderRepo.save(newOdr);
 	}
 
+	
 }
