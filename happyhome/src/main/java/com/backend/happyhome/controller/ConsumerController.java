@@ -31,11 +31,6 @@ public class ConsumerController {
 		return new ResponseEntity<>(consumerService.getAllConsumers(),HttpStatus.OK);
 	}
 	
-	@GetMapping("/{id}")
-	ResponseEntity<ConsumerDtoC> getConsumerDetailsById(@PathVariable Long id){
-		return new ResponseEntity<>(consumerService.getConsumerDetailsById(id),HttpStatus.OK);
-	}
-	
 	@PutMapping("/{id}")
 	ResponseEntity<ConsumerDtoC> editConsumerDetails(@RequestBody ConsumerDtoC consumer,@PathVariable Long id){
 		return new ResponseEntity<>(consumerService.editConsumerDetails(consumer, id),HttpStatus.OK);
@@ -46,8 +41,16 @@ public class ConsumerController {
 		return new ResponseEntity<>(consumerService.getAllOrdersOfConsumer(id),HttpStatus.OK);
 	}
 	
-	@GetMapping
-	ResponseEntity<Order> getOrderOfConsumer(@RequestBody Long oId){
+	@GetMapping("/order/{oId}")
+	ResponseEntity<Order> getOrderOfConsumer(@PathVariable Long oId){
 		return new ResponseEntity<>(consumerService.getOrderOfConsumer(oId),HttpStatus.OK);
 	}
+	
+	@GetMapping("/profile/{oId}")
+	public ResponseEntity<?> getConsumerProfile(@PathVariable Long oId){
+		return ResponseEntity.ok(consumerService.getConsumerProfileDetailsById(oId));	
+	}
+
+	
+	
 }

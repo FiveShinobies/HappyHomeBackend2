@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.happyhome.dtos.OrderDtoC;
@@ -27,7 +27,6 @@ import com.backend.happyhome.service.VendorEditProfileService;
 import com.backend.happyhome.service.VendorReviewService;
 import com.backend.happyhome.service.VendorService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -85,11 +84,13 @@ public class VendorController {
     }
 
     //  Edit Vendor Profile (PATCH)
-    @PatchMapping("/{vendorId}/profile")
+    @PutMapping("/{vendorId}/profile")
     public ResponseEntity<String> editVendorProfile(
             @PathVariable Long vendorId,
             @RequestBody VendorEditProfileRequestDTOE request) {
-
+    	
+    	System.out.print(request);
+    	
         vendorEditProfileService.editProfile(vendorId, request);
         return ResponseEntity.ok("Vendor profile updated successfully");
     }
@@ -102,7 +103,7 @@ public class VendorController {
 
         request.setOrderId(orderId);
 
-        vendorReviewService.giveFeedback(request);
+//        vendorReviewService.giveFeedback(request);
 
         return ResponseEntity.ok("Feedback submitted successfully");
     }
@@ -117,8 +118,9 @@ public class VendorController {
 	    	return ResponseEntity.ok(luo);
 	    }
 	    
-	    @PostMapping("/work/{vId}")
-	    public ResponseEntity<?> acceptWork(@RequestParam Long vId , @RequestBody Long oId){
+	    @PostMapping("/work/{vId}/{oId}")
+	    public ResponseEntity<?> acceptWork(@PathVariable Long vId , @PathVariable Long oId){
+	    	System.out.println(vId + "---" + oId);
 	    	boolean hasBeenAccepted = vendorService.acceptRequest(oId, vId);
 			if(hasBeenAccepted) {
 				return new ResponseEntity<>("Request Accepted", HttpStatus.ACCEPTED);
@@ -126,6 +128,8 @@ public class VendorController {
 				return new ResponseEntity<>("Request Not Accepted", HttpStatus.NOT_ACCEPTABLE);
 			}
 	    }
+	    
+	 
 	    
 	    
 }
