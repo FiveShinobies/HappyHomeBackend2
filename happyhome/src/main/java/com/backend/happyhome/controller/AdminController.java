@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.happyhome.dtos.AdminEditVendorRequestDTOE;
 import com.backend.happyhome.dtos.AdminOrderDetailsDTOE;
@@ -29,7 +31,12 @@ import com.backend.happyhome.service.AdminServiceService;
 import com.backend.happyhome.service.AdminVendorService;
 import com.backend.happyhome.service.ConsumerService;
 import com.backend.happyhome.service.HouseholdServiceService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -93,14 +100,62 @@ public class AdminController {
 		return ResponseEntity.ok(adminServiceService.getServiceDetailsById(id));
 	}
 
-	@PostMapping("/service/add")
-	public ResponseEntity<?> createService(@Valid @RequestBody CreateServiceRequestDTOB request) {
+	//use this for testing in postman
+	@PostMapping(
+	        value = "/service/add",
+	        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+	)
+	
+	public ResponseEntity<?> createService(
 
-		Long serviceIdLong = adminServiceService.createService(request, null);
+			@RequestPart("data") String data,
 
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(Map.of("message", "Service created successfully", "service", serviceIdLong));
+	        @RequestPart(value = "image", required = false)
+	        MultipartFile imageFile
+	) throws JsonMappingException, JsonProcessingException {
+		
+		ObjectMapper mapper = new ObjectMapper();
+	    CreateServiceRequestDTOB request =
+	            mapper.readValue(data, CreateServiceRequestDTOB.class);
+
+	    try {
+	        Long serviceIdLong = adminServiceService.createService(request, imageFile);
+
+	        return ResponseEntity.status(HttpStatus.CREATED)
+	                .body(Map.of(
+	                        "message", "Service created successfully",
+	                        "service", serviceIdLong
+	                ));
+
+	    } catch (Exception e) {
+	        return ResponseEntity
+	                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(e.getMessage());
+	    }
 	}
+	
+	//use this for real production
+//	@PostMapping(
+//	        value = "/service/add",
+//	        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+//	)
+//	public ResponseEntity<?> createService(
+//
+//	        @Valid
+//	        @RequestPart("data") CreateServiceRequestDTOB request,
+//
+//	        @RequestPart(value = "image", required = false)
+//	        MultipartFile imageFile
+//	) {
+//
+//	    Long serviceId = adminServiceService.createService(request, imageFile);
+//
+//	    return ResponseEntity.status(HttpStatus.CREATED)
+//	            .body(Map.of(
+//	                    "message", "Service created successfully",
+//	                    "service", serviceId
+//	            ));
+//	}
 
 	@DeleteMapping("/service/{id}")
 	public ResponseEntity<?> deleteService(@PathVariable Long id) {
