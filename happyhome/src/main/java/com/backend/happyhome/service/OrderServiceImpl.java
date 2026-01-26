@@ -1,23 +1,13 @@
 package com.backend.happyhome.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
-import com.backend.happyhome.dtos.OrderDtoC;
-import com.backend.happyhome.entities.Address;
-import com.backend.happyhome.entities.Consumer;
-import com.backend.happyhome.entities.Order;
-import com.backend.happyhome.entities.enums.Status;
-import com.backend.happyhome.repository.OrderRepo;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.happyhome.custom_exceptions.AddressNotFoundException;
 import com.backend.happyhome.custom_exceptions.CannotChangeTimeSlotException;
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
@@ -37,7 +27,6 @@ import com.backend.happyhome.repository.ConsumerRepo;
 import com.backend.happyhome.repository.ConsumerReviewRepo;
 import com.backend.happyhome.repository.HouseholdServiceRepo;
 import com.backend.happyhome.repository.OrderRepo;
-import com.backend.happyhome.repository.VendorRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,15 +42,30 @@ public class OrderServiceImpl implements OrderService{
 	
 	private final ConsumerRepo consumerRepo;
 	
-	private final VendorRepo vendorRepo;
-	
 	private final HouseholdServiceRepo serviceRepo;
 	
 	private final AddressRepo addressRepo; 
 	
 	@Override
 	public List<OrderDtoC> getIncomingOrderRequest() {
-		return orderRepo.findByStatus(Status.UNASSIGNED);
+		List<Order> odrs =  orderRepo.findByStatus(Status.UNASSIGNED);
+	
+		List<OrderDtoC> list = new ArrayList<>();
+		
+		for(Order o : odrs){
+			OrderDtoC x = new OrderDtoC();
+			Address a = addressRepo.findById(o.getOrderAddress().getAddressId()).orElseThrow(()->new AddressNotFoundException());
+			HouseholdService s = serviceRepo.findById(o.getMyServices().getServiceId()).orElseThrow();
+			x.setAddress(a);
+			x.setService(s);
+			x.setPrice(o.getOrderPrice());
+			x.setPriority(o.getPriority());
+			x.setTimeSlot(o.getTimeSlot());
+			x.setMyVendor(null);
+			list.add(x);
+		}
+	
+		return list;
 	}
 
 	@Override
@@ -170,7 +174,7 @@ public class OrderServiceImpl implements OrderService{
 		newOdr.setMyConsumer(c);
 		newOdr.setMyServices(s);
 		newOdr.setOrderAddress(a);
-		newOdr.setOrderDateTime(reqOdr.getTimeSlot());
+		newOdr.setTimeSlot(reqOdr.getTimeSlot());
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
 		newOdr.setStatus(reqOdr.getStatus());
 		newOdr.setPriority(reqOdr.getPriority());
