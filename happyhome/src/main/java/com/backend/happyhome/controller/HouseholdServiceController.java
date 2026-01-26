@@ -31,4 +31,7 @@ public class HouseholdServiceController {
 			@PathVariable Long id){
 		return ResponseEntity.ok(householdService.getServiceById(id));
 	}
+	
+	
+	
 }
