@@ -225,5 +225,13 @@ public class OrderServiceImpl implements OrderService{
 		return orderRepo.save(newOdr);
 	}
 
+
+
+	@Override
+	public List<Order> getAllOrders() {
+		// TODO Auto-generated method stub
+		return orderRepo.findAll();
+	}
+
 	
 }

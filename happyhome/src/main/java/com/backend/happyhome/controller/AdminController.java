@@ -1,5 +1,6 @@
 package com.backend.happyhome.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.AdminEditVendorRequestDTOE;
 import com.backend.happyhome.dtos.AdminOrderDetailsDTOE;
 import com.backend.happyhome.dtos.ConsumerDtoC;
@@ -28,10 +30,12 @@ import com.backend.happyhome.dtos.ServiceDetailsForEditDTOB;
 import com.backend.happyhome.dtos.UpdateServiceRequestDTOB;
 import com.backend.happyhome.dtos.VendorDetailsAdminDTOE;
 import com.backend.happyhome.dtos.VendorSummaryDTOE;
+import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.service.AdminServiceService;
 import com.backend.happyhome.service.AdminVendorService;
 import com.backend.happyhome.service.ConsumerService;
 import com.backend.happyhome.service.HouseholdServiceService;
+import com.backend.happyhome.service.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,6 +57,8 @@ public class AdminController {
 	private final AdminVendorService adminVendorService;
 
 	private final ConsumerService consumerService;
+
+	private final OrderService orderService;
 
 	// Get all vendors
 	@GetMapping("/vendors")
@@ -165,20 +171,23 @@ public class AdminController {
 				.body(Map.of("message", "Service updated successfully", "service", serviceId));
 
 	}
-//	@PutMapping("/service/{serviceId}")
-//	public ResponseEntity<?> updateService(@PathVariable Long serviceId,
-//			@Valid @RequestBody UpdateServiceRequestDTOB request) {
-//		
-//		adminServiceService.updateService(serviceId, request);
-//		
-//		return ResponseEntity.status(HttpStatus.CREATED)
-//				.body(Map.of("message", "Service updated successfully", "service", serviceId));
-//		
-//	}
 
 	@GetMapping("/consumer/{id}")
 	ResponseEntity<ConsumerDtoC> getConsumerDetailsById(@PathVariable Long id) {
 		return new ResponseEntity<>(consumerService.getConsumerDetailsById(id), HttpStatus.OK);
+	}
+
+	@GetMapping("/orders")
+	public ResponseEntity<?> getAllOrder() {
+
+		List<OrderDTO> res = new ArrayList<>();
+		List<Order> x = orderService.getAllOrders();
+
+		for (Order o : x) {
+			res.add(ConsumerController.mapToOrderDTO(o));
+		}
+
+		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
 }
