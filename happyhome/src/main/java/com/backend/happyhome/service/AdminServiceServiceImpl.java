@@ -58,16 +58,17 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 		HouseholdService savedService = serviceRepo.save(service);
 
 		// Saving the images in service Image table
-
-		try {
-			ServiceImage image = new ServiceImage();
-			image.setImage(imageFile.getBytes());
-			image.setMyService(savedService);
-
-			serviceImageRepo.save(image);
-		} catch (IOException e) {
-
-			throw new ImageNotUploadedException("Failed to add image bytes");
+		if(imageFile != null) {
+			try {
+				ServiceImage image = new ServiceImage();
+				image.setImage(imageFile.getBytes());
+				image.setMyService(savedService);
+	
+				serviceImageRepo.save(image);
+			} catch (IOException e) {
+	
+				throw new ImageNotUploadedException("Failed to add image bytes");
+			}
 		}
 
 		return savedService.getServiceId();
@@ -93,17 +94,19 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 		service.setShortDesc(dto.getShortDesc());
 		service.setLongDesc(dto.getLongDesc());
 		service.setPrice(dto.getPrice());
-		
-		try {
-			ServiceImage serviceImage = new ServiceImage();
-			serviceImage.setImage(image.getBytes());
-			serviceImage.setMyService(service);
+		if(image != null) {
 			
-			serviceImageRepo.save(serviceImage);
-			
-		} catch (IOException e) {
-			// TODO: handle exception
-			throw new ImageNotUploadedException("Failed to add image");
+			try {
+				ServiceImage serviceImage = new ServiceImage();
+				serviceImage.setImage(image.getBytes());
+				serviceImage.setMyService(service);
+				
+				serviceImageRepo.save(serviceImage);
+				
+			} catch (IOException e) {
+				// TODO: handle exception
+				throw new ImageNotUploadedException("Failed to add image");
+			}
 		}
 
 	}

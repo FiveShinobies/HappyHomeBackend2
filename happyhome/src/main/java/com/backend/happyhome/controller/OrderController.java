@@ -59,7 +59,7 @@ public class OrderController {
 	@GetMapping("/{oId}")
 	public ResponseEntity<?> getOrderDetails(@PathVariable Long oId){
 		Order o = orderService.getOrderDetailsById(oId);
-		return ResponseEntity.ok(ConsumerController.mapToOrderDTO(o));
+		return ResponseEntity.ok(ConsumerController.mapToOrderDTO(o)); 
 	}
 	
 	@GetMapping

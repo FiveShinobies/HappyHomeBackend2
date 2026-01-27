@@ -8,23 +8,21 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.happyhome.custom_exceptions.AddressNotFoundException;
+import com.backend.happyhome.controller.ConsumerController;
 import com.backend.happyhome.custom_exceptions.CannotChangeTimeSlotException;
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
-import com.backend.happyhome.custom_exceptions.ConsumerTransactionDNE;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExistException;
 import com.backend.happyhome.custom_exceptions.ReviewAlreadyExistsException;
+import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerReviewDTOA;
-import com.backend.happyhome.dtos.OrderDtoC;
 import com.backend.happyhome.dtos.OrderDtoD;
 import com.backend.happyhome.dtos.PlaceOrderDTOA;
 import com.backend.happyhome.dtos.ServiceDtoC;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.ConsumerReview;
-import com.backend.happyhome.entities.ConsumerTransaction;
 import com.backend.happyhome.entities.HouseholdService;
 import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.entities.enums.Status;
@@ -37,124 +35,121 @@ import com.backend.happyhome.repository.consumer_repos.ConsumerTransactionRepo;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class OrderServiceImpl implements OrderService{
+public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepo orderRepo;
-	
+
 	private final ConsumerReviewRepo crRepo;
-	
+
 	private final ConsumerRepo consumerRepo;
-	
+
 	private final HouseholdServiceRepo serviceRepo;
-	
-	private final AddressRepo addressRepo; 
-	
+
+	private final AddressRepo addressRepo;
+
 	private final ConsumerTransactionRepo ctRepo;
-	
+
 	@Override
 	public List<OrderDtoD> getIncomingOrderRequest() {
 
-	    List<Order> orders = orderRepo.findByStatus(Status.UNASSIGNED);
+		List<Order> orders = orderRepo.findByStatus(Status.UNASSIGNED);
 
-	    if (orders == null || orders.isEmpty()) {
-	        return Collections.emptyList();
-	    }
+		if (orders == null || orders.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-	    List<OrderDtoD> result = new ArrayList<>();
+		List<OrderDtoD> result = new ArrayList<>();
 
-	    for (Order o : orders) {
+		for (Order o : orders) {
 
-	        OrderDtoD dto = new OrderDtoD();
+			OrderDtoD dto = new OrderDtoD();
 
-	        // ✅ Address → AddressDtoC
-	        if (o.getOrderAddress() != null) {
-	            Address a = addressRepo
-	                    .findById(o.getOrderAddress().getAddressId())
-	                    .orElse(null);
+			// ✅ Address → AddressDtoC
+			if (o.getOrderAddress() != null) {
+				Address a = addressRepo
+						.findById(o.getOrderAddress().getAddressId())
+						.orElse(null);
 
-	            if (a != null) {
-	                AddressDto ad = new AddressDto();
-	                ad.setTown(a.getTown());
-	                ad.setCity(a.getCity());
-	                ad.setPincode(a.getPincode());
-	                dto.setAddress(ad);
-	            }
-	        }
+				if (a != null) {
+					AddressDto ad = new AddressDto();
+					ad.setTown(a.getTown());
+					ad.setCity(a.getCity());
+					ad.setPincode(a.getPincode());
+					dto.setAddress(ad);
+				}
+			}
 
-	        // ✅ HouseholdService → ServiceDtoC (USING YOUR DTO)
-	        if (o.getMyServices() != null) {
-	            HouseholdService s = serviceRepo
-	                    .findById(o.getMyServices().getServiceId())
-	                    .orElse(null);
+			// ✅ HouseholdService → ServiceDtoC (USING YOUR DTO)
+			if (o.getMyServices() != null) {
+				HouseholdService s = serviceRepo
+						.findById(o.getMyServices().getServiceId())
+						.orElse(null);
 
-	            if (s != null) {
-	                ServiceDtoC sd = new ServiceDtoC();
-	                sd.setCategory(s.getCategory());
-	                sd.setServiceName(s.getServiceName());
-	                dto.setService(sd);
-	            }
-	        }
+				if (s != null) {
+					ServiceDtoC sd = new ServiceDtoC();
+					sd.setCategory(s.getCategory());
+					sd.setServiceName(s.getServiceName());
+					dto.setService(sd);
+				}
+			}
 
-	        dto.setPrice(o.getOrderPrice());
-	        dto.setPriority(o.getPriority());
-	        dto.setTimeSlot(o.getTimeSlot());
-            dto.setOrderId(o.getOrderId());
-	        result.add(dto);
-	    }
+			dto.setPrice(o.getOrderPrice());
+			dto.setPriority(o.getPriority());
+			dto.setTimeSlot(o.getTimeSlot());
+			dto.setOrderId(o.getOrderId());
+			result.add(dto);
+		}
 
-	    return result;
+		return result;
 	}
-
-
 
 	@Override
-	public OrderDtoC getOngoingOrders(Long oId) {
-		Order o = orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
-		OrderDtoC oD = new OrderDtoC();
-		oD.setAddress(o.getOrderAddress());
-		oD.setMyVendor(o.getMyVendor());
-		oD.setPrice(o.getOrderPrice());
-		oD.setPriority(o.getPriority());
-		oD.setTimeSlot(o.getTimeSlot());
-		
-		return oD;
+	public OrderDTO getOngoingOrders(Long oId) {
+		Order o = orderRepo.findById(oId).orElseThrow(() -> new OrderDoesNotExist());
+		// OrderDtoC oD = new OrderDtoC();
+		// oD.setAddress(o.getOrderAddress());
+		// oD.setMyVendor(o.getMyVendor());
+		// oD.setPrice(o.getOrderPrice());
+		// oD.setPriority(o.getPriority());
+		// oD.setTimeSlot(o.getTimeSlot());
+
+		return ConsumerController.mapToOrderDTO(o);
 	}
-	
+
 	public Address getAddress(Long oId) {
-		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
-		
+		Order order = orderRepo.findById(oId).orElseThrow(() -> new OrderDoesNotExist());
+
 		return order.getOrderAddress();
 	}
 
 	@Override
 	public Consumer getConsumer(Long oId) {
-		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
-		
+		Order order = orderRepo.findById(oId).orElseThrow(() -> new OrderDoesNotExist());
+
 		return order.getMyConsumer();
 	}
 
 	@Override
 	public boolean updateStatusToInProgress(Long oId) {
-		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
-		
+		Order order = orderRepo.findById(oId).orElseThrow(() -> new OrderDoesNotExist());
+
 		order.setStatus(Status.INPROGRESS);
-		
+
 		return true;
 	}
 
 	@Override
 	public boolean updateStatusToCompleted(Long oId) {
-		Order order = orderRepo.findById(oId).orElseThrow(()->new OrderDoesNotExist());
-		
+		Order order = orderRepo.findById(oId).orElseThrow(() -> new OrderDoesNotExist());
+
 		order.setStatus(Status.COMPLETED);
-		
+
 		return true;
 	}
-		
+
 	@Override
 	public List<Order> getOrdersByConsumerId(Long cid) {
 		return orderRepo.findByMyConsumerConsumerId(cid);
@@ -165,17 +160,15 @@ public class OrderServiceImpl implements OrderService{
 		return orderRepo.findById(oid).orElse(null);
 	}
 
-	
 	@Override
-	public Order changeTimeSlot( Long oid , LocalDateTime updatedTime) {
-		
-		
-		Order o = orderRepo.findById(oid).orElseThrow(()->new OrderDoesNotExist());
-		
-		if(o.getStatus() != Status.UNASSIGNED) {
-			throw new CannotChangeTimeSlotException("TIme Slot cannot be changed as order is already " + o.getStatus() );
+	public Order changeTimeSlot(Long oid, LocalDateTime updatedTime) {
+
+		Order o = orderRepo.findById(oid).orElseThrow(() -> new OrderDoesNotExist());
+
+		if (o.getStatus() != Status.UNASSIGNED) {
+			throw new CannotChangeTimeSlotException("TIme Slot cannot be changed as order is already " + o.getStatus());
 		}
-		
+
 		o.setOrderDateTime(updatedTime);
 		orderRepo.save(o);
 		return o;
@@ -183,37 +176,37 @@ public class OrderServiceImpl implements OrderService{
 
 	@Override
 	public ConsumerReview addConsumerReviewForAnOrder(Long oid, ConsumerReviewDTOA cr) {
-		
-		if(orderRepo.findById(oid).orElse(null) == null ) {
+
+		if (orderRepo.findById(oid).orElse(null) == null) {
 			throw new OrderDoesNotExistException("Order Does not Exist!!");
 		}
-		
-		if(crRepo.findByMyOrderOrderId(oid) != null) {
+
+		if (crRepo.findByMyOrderOrderId(oid) != null) {
 			throw new ReviewAlreadyExistsException("Review Already Exists!!");
 		}
-		 
-		Order odr = orderRepo.findById(oid).orElseThrow(()->new OrderDoesNotExist());
+
+		Order odr = orderRepo.findById(oid).orElseThrow(() -> new OrderDoesNotExist());
 		ConsumerReview cf = new ConsumerReview();
-		cf.setDescription(cr.getDescription()); 
+		cf.setDescription(cr.getDescription());
 		cf.setRating(cr.getRating());
 		cf.setMyOrder(odr);
-		
+
 		crRepo.save(cf);
-		
+
 		return cf;
 	}
 
 	@Override
 	public Order addOrder(PlaceOrderDTOA reqOdr) {
-		
+
 		Order newOdr = new Order();
-		
+
 		Consumer c = consumerRepo.findById(reqOdr.getConsumerId()).orElseThrow(() -> new ConsumerNotFoundException());
-		
+
 		HouseholdService s = serviceRepo.findById(reqOdr.getServiceId()).orElseThrow();
-		
-		Address a = addressRepo.findById(reqOdr.getAddressId()).orElseThrow() ;
-				
+
+		Address a = addressRepo.findById(reqOdr.getAddressId()).orElseThrow();
+
 		newOdr.setMyConsumer(c);
 		newOdr.setMyServices(s);
 		newOdr.setOrderAddress(a);
@@ -221,15 +214,13 @@ public class OrderServiceImpl implements OrderService{
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
 		newOdr.setStatus(Status.UNASSIGNED);
 		newOdr.setPriority(reqOdr.getPriority());
-		
+
 		return orderRepo.save(newOdr);
 	}
 
 	@Override
 	public List<Order> getAllOrders() {
-		// TODO Auto-generated method stub
 		return orderRepo.findAll();
 	}
 
-	
 }
