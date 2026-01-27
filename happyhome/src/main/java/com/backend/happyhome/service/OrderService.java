@@ -37,4 +37,6 @@ public interface OrderService {
 	
 	Order addOrder(PlaceOrderDTOA newOrder);
 
+	public List<Order> getAllOrders();
+	
 }
