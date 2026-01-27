@@ -8,4 +8,6 @@ import com.backend.happyhome.entities.Vendor;
 @Repository
 public interface VendorRepo extends JpaRepository<Vendor, Long> {
 
+	Vendor findByMyUserUserId(Long uid);
+	
 }

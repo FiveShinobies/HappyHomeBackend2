@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 	private final AddressRepo addressRepo;
 	private final ServiceRepo serviceRepo;
 	private final LanguageRepository languageRepo;
-	
+
 	@Override
 	public User isUserPresent(UserLoginDtoC user) throws UserNotPresentException{
 		
@@ -132,6 +132,25 @@ public class UserServiceImpl implements UserService {
 		address.setTown(user.getAddress().getTown());
 		
 		addressRepo.save(address);
+	}
+
+	@Override
+	public Long giveRespectiveId(Long uid) {
+		
+		Consumer c = consumerRepo.findByMyUser_UserId(uid);
+		
+		if(c != null) {
+			return c.getConsumerId();
+		}
+		
+		Vendor v = vendorRepo.findByMyUserUserId(uid);
+		
+		if(v != null) {
+			return v.getVendorId();
+		}
+		
+		return uid;
+		
 	}
 	
 	
