@@ -30,8 +30,7 @@ public interface OrderService {
 	ConsumerReview addConsumerReviewForAnOrder(Long oid , ConsumerReviewDTOA cr);
 	
 	Order addOrder(PlaceOrderDTOA newOrder);
-	List<Order> getAllOrders();
 
-	public List<Order> getAllOrders();
+	List<Order> getAllOrders();
 	
 }

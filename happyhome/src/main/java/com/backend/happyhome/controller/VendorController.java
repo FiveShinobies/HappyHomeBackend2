@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.OrderDtoD;
 import com.backend.happyhome.dtos.VendorAddressResponseDTOE;
 import com.backend.happyhome.dtos.VendorBankingResponseDTOE;
@@ -45,7 +45,7 @@ public class VendorController {
 	
 	
 	@GetMapping("/details/{id}")
-	ResponseEntity<OrderDtoC> getOngoingOrderDetails(@PathVariable Long oId){
+	ResponseEntity<OrderDTO> getOngoingOrderDetails(@PathVariable Long oId){
 		return new ResponseEntity<>(orderService.getOngoingOrders(oId),HttpStatus.OK);
 	}
 	
