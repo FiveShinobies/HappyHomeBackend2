@@ -79,15 +79,20 @@ public class ConsumerServiceImpl implements ConsumerService {
 			}
 			dto.setRewardPoints(consumerRepo.findByMyUser_UserId(u.getUserId()).getRewardPoints());
 			
-			AddressDto ad = new AddressDto();
-			Address address = addressRepo.findByMyUser(u);
-			ad.setCity(address.getCity());
-			ad.setHomeNo(address.getHomeNo());
-			ad.setPincode(address.getPincode());
-			ad.setState(address.getState());
-			ad.setTown(address.getTown());
+			List<AddressDto> ad2 = new ArrayList<>();
+			List<Address> address = addressRepo.findByMyUserUserId(u.getUserId());
+			for(Address ad : address) {
+				AddressDto x = new AddressDto();
+				x.setCity(ad.getCity());
+				x.setHomeNo(ad.getHomeNo());
+				x.setPincode(ad.getPincode());
+				x.setState(ad.getState());
+				x.setTown(ad.getTown());
+				
+				ad2.add(x);
+			}
 			
-			dto.setAddress(ad);
+			dto.setAddress(ad2);
 			
 			result.add(dto);
 		}
@@ -114,15 +119,20 @@ public class ConsumerServiceImpl implements ConsumerService {
 			dto.getLanguages().add(lang.getLangName());
 		}
 		
-		AddressDto ad = new AddressDto();
-		Address address = addressRepo.findByMyUser(u);
-		ad.setCity(address.getCity());
-		ad.setHomeNo(address.getHomeNo());
-		ad.setPincode(address.getPincode());
-		ad.setState(address.getState());
-		ad.setTown(address.getTown());
+		List<AddressDto> ad2 = new ArrayList<>();
+		List<Address> address = addressRepo.findByMyUserUserId(u.getUserId());
+		for(Address ad : address) {
+			AddressDto x = new AddressDto();
+			x.setCity(ad.getCity());
+			x.setHomeNo(ad.getHomeNo());
+			x.setPincode(ad.getPincode());
+			x.setState(ad.getState());
+			x.setTown(ad.getTown());
+			
+			ad2.add(x);
+		}
 		
-		dto.setAddress(ad);
+		dto.setAddress(ad2);
 		
 		return dto;
 	}
@@ -149,17 +159,21 @@ public class ConsumerServiceImpl implements ConsumerService {
 		c.setRewardPoints(dto.getRewardPoints());
 		consumerRepo.save(c);
 		
-		AddressDto address = dto.getAddress();
+		List<AddressDto> address2 = dto.getAddress();
 		
-		Address ad = new Address();
-		ad.setCity(address.getCity());
-		ad.setHomeNo(address.getHomeNo());
-		ad.setPincode(address.getPincode());
-		ad.setState(address.getState());
-		ad.setTown(address.getTown());
-		ad.setMyUser(user);
-		
-		addressRepo.save(ad);
+		for(AddressDto address : address2 ) {
+			
+			Address ad = new Address();
+			ad.setCity(address.getCity());
+			ad.setHomeNo(address.getHomeNo());
+			ad.setPincode(address.getPincode());
+			ad.setState(address.getState());
+			ad.setTown(address.getTown());
+			ad.setMyUser(user);
+			
+			addressRepo.save(ad);
+			
+		}
 		return dto;
 	}
 
