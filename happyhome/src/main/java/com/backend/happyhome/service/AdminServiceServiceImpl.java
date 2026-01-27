@@ -72,41 +72,7 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 
 		return savedService.getServiceId();
 	}
-//	@Override
-//	public Long createService(CreateServiceRequestDTOB request, MultipartFile[] images)
-//			throws ImageNotUploadedException {
-//		
-//		// Creating a service object
-//		HouseholdService service = new HouseholdService();
-//		
-//		// setting up the fields of service object
-//		service.setServiceName(request.getServiceName());
-//		service.setShortDesc(request.getShortDesc());
-//		service.setLongDesc(request.getLongDesc());
-//		service.setPrice(request.getPrice());
-//		service.setCategory(request.getCategory());
-//		
-//		// Saving the service in service table
-//		HouseholdService savedService = serviceRepo.save(service);
-//		
-//		// Saving the images in service Image table
-//		if (images != null && images.length > 0) {
-//			for (MultipartFile file : images) {
-//				try {
-//					ServiceImage image = new ServiceImage();
-//					image.setImage(file.getBytes());
-//					image.setMyService(savedService);
-//					
-//					serviceImageRepo.save(image);
-//				} catch (IOException e) {
-//					
-//					throw new ImageNotUploadedException("Failed to add image bytes");
-//				}
-//			}
-//		}
-//		
-//		return savedService.getServiceId();
-//	}
+
 
 	@Override
 	public void deleteService(Long sid) {
@@ -115,19 +81,10 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 				.orElseThrow(() -> new ServiceNotFoundException("Service is not found with id: " + sid));
 		// soft delete
 		service.setActive(false);
-
-//		serviceImageRepo.deleteByMyServiceServiceId(sid);
-
-//		for(Vendor v : service.getMyVendors()) {
-//			v.getMyServices().remove(service);
-//		}
-//		//.getMyVendors().clear();
-
-//		serviceRepo.delete(service);
 	}
 
 	@Override
-	public void updateService(Long serviceId, UpdateServiceRequestDTOB dto) {
+	public void updateService(Long serviceId, UpdateServiceRequestDTOB dto,MultipartFile image) {
 
 		HouseholdService service = serviceRepo.findByServiceIdAndActiveTrue(serviceId)
 				.orElseThrow(() -> new ServiceNotFoundException("Service not found with serviceId: " + serviceId));
@@ -136,7 +93,21 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 		service.setShortDesc(dto.getShortDesc());
 		service.setLongDesc(dto.getLongDesc());
 		service.setPrice(dto.getPrice());
+		
+		try {
+			ServiceImage serviceImage = new ServiceImage();
+			serviceImage.setImage(image.getBytes());
+			serviceImage.setMyService(service);
+			
+			serviceImageRepo.save(serviceImage);
+			
+		} catch (IOException e) {
+			// TODO: handle exception
+			throw new ImageNotUploadedException("Failed to add image");
+		}
 
 	}
+
+	
 
 }

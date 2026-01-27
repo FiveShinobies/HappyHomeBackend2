@@ -44,6 +44,5 @@ public class HouseholdServiceController {
 	public ResponseEntity<List<String>> getServicesForCategory(@RequestParam Category category){
 		return ResponseEntity.ok(householdService.getServicesForCategory(category));
 	}
-	
-	
+
 }
