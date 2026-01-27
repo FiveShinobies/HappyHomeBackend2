@@ -1,0 +1,11 @@
+package com.backend.happyhome.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.backend.happyhome.entities.PaymentUpi;
+
+public interface PaymentUpiRepo extends JpaRepository<PaymentUpi, Long> {
+	List<PaymentUpi> findByMyUserUserId(Long userId);
+}
