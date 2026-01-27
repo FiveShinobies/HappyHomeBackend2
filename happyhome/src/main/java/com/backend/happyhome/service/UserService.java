@@ -10,4 +10,7 @@ public interface UserService {
 	User isUserPresent(UserLoginDtoC user);
 	void registerConsumerUser(ConsumerRegisterDtoC user);
 	void registerVendorUser(VendorRegisterDtoC user);
+	
+	Long giveRespectiveId(Long uid);
+
 }
