@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.dtos.AddressDto;
+import com.backend.happyhome.dtos.AdminOrderDetailsDTOE;
 import com.backend.happyhome.dtos.ConsumerDtoC;
 import com.backend.happyhome.dtos.ConsumerProfileDetailsDTOA;
 import com.backend.happyhome.entities.Address;
@@ -63,10 +64,13 @@ public class ConsumerServiceImpl implements ConsumerService {
 
 	@Override
 	public List<ConsumerDtoC> getAllConsumers() {
-		List<User> users = userRepo.findByRole(UserRole.CONSUMER);
+		//List<User> users = userRepo.findByRole(UserRole.CONSUMER);
+		List<Consumer> consumers = consumerRepo.findAll();
 		List<ConsumerDtoC> result = new ArrayList<>();
-		for(User u : users) {
+		for(Consumer c : consumers) {
+			User u = userRepo.findById(c.getMyUser().getUserId()).get();
 			ConsumerDtoC dto = new ConsumerDtoC();
+			dto.setConsumerId(c.getConsumerId());
 			dto.setFirstName(u.getFirstName());
 			dto.setLastName(u.getLastName());
 			dto.setEmail(u.getEmail());
@@ -79,20 +83,15 @@ public class ConsumerServiceImpl implements ConsumerService {
 			}
 			dto.setRewardPoints(consumerRepo.findByMyUser_UserId(u.getUserId()).getRewardPoints());
 			
-			List<AddressDto> ad2 = new ArrayList<>();
-			List<Address> address = addressRepo.findByMyUserUserId(u.getUserId());
-			for(Address ad : address) {
-				AddressDto x = new AddressDto();
-				x.setCity(ad.getCity());
-				x.setHomeNo(ad.getHomeNo());
-				x.setPincode(ad.getPincode());
-				x.setState(ad.getState());
-				x.setTown(ad.getTown());
-				
-				ad2.add(x);
-			}
+			AddressDto ad = new AddressDto();
+			List<Address> address = addressRepo.findByMyUser(u);
+			ad.setCity(address.get(0).getCity());
+			ad.setHomeNo(address.get(0).getHomeNo());
+			ad.setPincode(address.get(0).getPincode());
+			ad.setState(address.get(0).getState());
+			ad.setTown(address.get(0).getTown());
 			
-			dto.setAddress(ad2);
+			dto.setAddress(ad);
 			
 			result.add(dto);
 		}
@@ -106,6 +105,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 		User u = c.getMyUser();
 		//map to dto
 		ConsumerDtoC dto = new ConsumerDtoC();
+		dto.setConsumerId(cId);
 		dto.setFirstName(u.getFirstName());
 		dto.setLastName(u.getLastName());
 		dto.setEmail(u.getEmail());
@@ -119,20 +119,15 @@ public class ConsumerServiceImpl implements ConsumerService {
 			dto.getLanguages().add(lang.getLangName());
 		}
 		
-		List<AddressDto> ad2 = new ArrayList<>();
-		List<Address> address = addressRepo.findByMyUserUserId(u.getUserId());
-		for(Address ad : address) {
-			AddressDto x = new AddressDto();
-			x.setCity(ad.getCity());
-			x.setHomeNo(ad.getHomeNo());
-			x.setPincode(ad.getPincode());
-			x.setState(ad.getState());
-			x.setTown(ad.getTown());
-			
-			ad2.add(x);
-		}
+		AddressDto ad = new AddressDto();
+		List<Address> address = addressRepo.findByMyUser(u);
+		ad.setCity(address.get(0).getCity());
+		ad.setHomeNo(address.get(0).getHomeNo());
+		ad.setPincode(address.get(0).getPincode());
+		ad.setState(address.get(0).getState());
+		ad.setTown(address.get(0).getTown());
 		
-		dto.setAddress(ad2);
+		dto.setAddress(ad);
 		
 		return dto;
 	}
@@ -159,28 +154,34 @@ public class ConsumerServiceImpl implements ConsumerService {
 		c.setRewardPoints(dto.getRewardPoints());
 		consumerRepo.save(c);
 		
-		List<AddressDto> address2 = dto.getAddress();
+		AddressDto address = dto.getAddress();
 		
-		for(AddressDto address : address2 ) {
-			
-			Address ad = new Address();
-			ad.setCity(address.getCity());
-			ad.setHomeNo(address.getHomeNo());
-			ad.setPincode(address.getPincode());
-			ad.setState(address.getState());
-			ad.setTown(address.getTown());
-			ad.setMyUser(user);
-			
-			addressRepo.save(ad);
-			
-		}
+		Address ad = new Address();
+		ad.setCity(address.getCity());
+		ad.setHomeNo(address.getHomeNo());
+		ad.setPincode(address.getPincode());
+		ad.setState(address.getState());
+		ad.setTown(address.getTown());
+		ad.setMyUser(user);
+		
+		addressRepo.save(ad);
 		return dto;
 	}
 
 	@Override
-	public List<Order> getAllOrdersOfConsumer(Long cId) {
+	public List<AdminOrderDetailsDTOE> getAllOrdersOfConsumer(Long cId) {
 		Consumer myConsumer = consumerRepo.findById(cId).orElseThrow(()-> new ConsumerNotFoundException());
-		return orderRepo.findByMyConsumer(myConsumer);
+		//List<Order> o =  orderRepo.findByMyConsumer(myConsumer);
+		
+		return orderRepo.findByMyConsumerConsumerId(cId)
+				.stream().map(order -> {
+					AdminOrderDetailsDTOE dto = new AdminOrderDetailsDTOE();
+					dto.setOrderId(order.getOrderId());
+					dto.setOrderDate(order.getOrderDateTime());
+					dto.setTotal(order.getOrderPrice());
+					dto.setStatus(order.getStatus());
+					return dto;
+				}).toList();
 	}
 	
 	public Order getOrderOfConsumer(Long oId) {
@@ -202,11 +203,11 @@ public class ConsumerServiceImpl implements ConsumerService {
 		List<Address> adrs = addressRepo.findByMyUserUserId(uid);
 		cpd.setAddresses(adrs);
 		 
-//		List<PaymentUpi> upis = upiRepo.findByMyUserUserId(uid);
-//		cpd.setUpis(upis);
-//		
-//		List<PaymentCard> cards = cardRepo.findByMyUserUserId(uid);
-//		cpd.setCards(cards);
+		List<PaymentUpi> upis = upiRepo.findByMyUserUserId(uid);
+		cpd.setUpis(upis);
+		
+		List<PaymentCard> cards = cardRepo.findByMyUserUserId(uid);
+		cpd.setCards(cards);
 		 
 		UserImage img =  imgRepo.findById(uid).orElse(null) ; 
 		cpd.setImage(img);

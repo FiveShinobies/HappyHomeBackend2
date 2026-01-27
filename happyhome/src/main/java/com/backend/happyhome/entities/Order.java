@@ -48,19 +48,19 @@ public class Order {
 	private HouseholdService myServices;
 	
 	//one to one mappings ------------------------------------------------------------------------------------------
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="consumer_transaction_id")
 	private ConsumerTransaction myConsumerTransaction;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="admin_transaction_id")
 	private AdminTransaction myAdminTransaction;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="consumer_review_id")
 	private ConsumerReview myConsumerReview;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="vendor_review_id")
 	private VendorReview myVendorReview;
 	//-----------------------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ public class Order {
 	@Enumerated(EnumType.STRING)
 	private Priority priority;
 	
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name="address_id", nullable = false)
 	private Address orderAddress;
 	

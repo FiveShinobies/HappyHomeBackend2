@@ -20,6 +20,3 @@ public class OrderDtoC {
 	private Priority priority;
 
 }
-
-
-

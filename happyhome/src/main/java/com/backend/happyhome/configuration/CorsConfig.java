@@ -16,21 +16,25 @@ public class CorsConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ Allow ALL origins (even with credentials)
-        config.setAllowedOriginPatterns(List.of("*"));
+        // Frontend origin (Vite / React)
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
 
-        // ✅ Allow ALL HTTP methods
-        config.setAllowedMethods(List.of("*"));
+        // Allowed HTTP methods
+        config.setAllowedMethods(
+                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        );
 
-        // ✅ Allow ALL headers
+        // Allowed headers
         config.setAllowedHeaders(List.of("*"));
 
-        // ✅ Allow cookies, Authorization headers, etc.
+        // Allow cookies / authorization headers
         config.setAllowCredentials(true);
 
-        // (Optional but helpful)
-        config.setMaxAge(3600L);
-
+        //Allow custom headers of Role that we send from user controller login api
+        config.setExposedHeaders(List.of("Role"));
+        
+        
+        // Register CORS configuration
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

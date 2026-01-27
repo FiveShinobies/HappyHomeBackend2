@@ -2,24 +2,20 @@ package com.backend.happyhome.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.happyhome.controller.ConsumerController;
+import com.backend.happyhome.custom_exceptions.AddressNotFoundException;
 import com.backend.happyhome.custom_exceptions.CannotChangeTimeSlotException;
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExistException;
 import com.backend.happyhome.custom_exceptions.ReviewAlreadyExistsException;
-import com.backend.happyhome.dto.OrderDTO;
-import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerReviewDTOA;
-import com.backend.happyhome.dtos.OrderDtoD;
+import com.backend.happyhome.dtos.OrderDtoC;
 import com.backend.happyhome.dtos.PlaceOrderDTOA;
-import com.backend.happyhome.dtos.ServiceDtoC;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.ConsumerReview;
@@ -31,7 +27,6 @@ import com.backend.happyhome.repository.ConsumerRepo;
 import com.backend.happyhome.repository.ConsumerReviewRepo;
 import com.backend.happyhome.repository.HouseholdServiceRepo;
 import com.backend.happyhome.repository.OrderRepo;
-import com.backend.happyhome.repository.consumer_repos.ConsumerTransactionRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -51,75 +46,39 @@ public class OrderServiceImpl implements OrderService{
 	
 	private final AddressRepo addressRepo; 
 	
-	private final ConsumerTransactionRepo ctRepo;
-	
 	@Override
-	public List<OrderDtoD> getIncomingOrderRequest() {
-
-	    List<Order> orders = orderRepo.findByStatus(Status.UNASSIGNED);
-
-	    if (orders == null || orders.isEmpty()) {
-	        return Collections.emptyList();
-	    }
-
-	    List<OrderDtoD> result = new ArrayList<>();
-
-	    for (Order o : orders) {
-
-	        OrderDtoD dto = new OrderDtoD();
-
-	        // ✅ Address → AddressDtoC
-	        if (o.getOrderAddress() != null) {
-	            Address a = addressRepo
-	                    .findById(o.getOrderAddress().getAddressId())
-	                    .orElse(null);
-
-	            if (a != null) {
-	                AddressDto ad = new AddressDto();
-	                ad.setTown(a.getTown());
-	                ad.setCity(a.getCity());
-	                ad.setPincode(a.getPincode());
-	                dto.setAddress(ad);
-	            }
-	        }
-
-	        // ✅ HouseholdService → ServiceDtoC (USING YOUR DTO)
-	        if (o.getMyServices() != null) {
-	            HouseholdService s = serviceRepo
-	                    .findById(o.getMyServices().getServiceId())
-	                    .orElse(null);
-
-	            if (s != null) {
-	                ServiceDtoC sd = new ServiceDtoC();
-	                sd.setCategory(s.getCategory());
-	                sd.setServiceName(s.getServiceName());
-	                dto.setService(sd);
-	            }
-	        }
-
-	        dto.setPrice(o.getOrderPrice());
-	        dto.setPriority(o.getPriority());
-	        dto.setTimeSlot(o.getTimeSlot());
-            dto.setOrderId(o.getOrderId());
-	        result.add(dto);
-	    }
-
-	    return result;
+	public List<OrderDtoC> getIncomingOrderRequest() {
+		List<Order> odrs =  orderRepo.findByStatus(Status.UNASSIGNED);
+	
+		List<OrderDtoC> list = new ArrayList<>();
+		
+		for(Order o : odrs){
+			OrderDtoC x = new OrderDtoC();
+			Address a = addressRepo.findById(o.getOrderAddress().getAddressId()).orElseThrow(()->new AddressNotFoundException());
+			HouseholdService s = serviceRepo.findById(o.getMyServices().getServiceId()).orElseThrow();
+			x.setAddress(a);
+			x.setService(s);
+			x.setPrice(o.getOrderPrice());
+			x.setPriority(o.getPriority());
+			x.setTimeSlot(o.getTimeSlot());
+			x.setMyVendor(null);
+			list.add(x);
+		}
+	
+		return list;
 	}
 
-
-
 	@Override
-	public OrderDTO getOngoingOrders(Long oId) {
+	public OrderDtoC getOngoingOrders(Long oId) {
 		Order o = orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
-//		OrderDtoC oD = new OrderDtoC();
-//		oD.setAddress(o.getOrderAddress());
-//		oD.setMyVendor(o.getMyVendor());
-//		oD.setPrice(o.getOrderPrice());
-//		oD.setPriority(o.getPriority());
-//		oD.setTimeSlot(o.getTimeSlot());
+		OrderDtoC oD = new OrderDtoC();
+		oD.setAddress(o.getOrderAddress());
+		oD.setMyVendor(o.getMyVendor());
+		oD.setPrice(o.getOrderPrice());
+		oD.setPriority(o.getPriority());
+		oD.setTimeSlot(o.getTimeSlot());
 		
-		return ConsumerController.mapToOrderDTO(o);
+		return oD;
 	}
 	
 	public Address getAddress(Long oId) {
@@ -211,23 +170,16 @@ public class OrderServiceImpl implements OrderService{
 		HouseholdService s = serviceRepo.findById(reqOdr.getServiceId()).orElseThrow();
 		
 		Address a = addressRepo.findById(reqOdr.getAddressId()).orElseThrow() ;
-				
+		
 		newOdr.setMyConsumer(c);
 		newOdr.setMyServices(s);
 		newOdr.setOrderAddress(a);
 		newOdr.setTimeSlot(reqOdr.getTimeSlot());
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
-		newOdr.setStatus(Status.UNASSIGNED);
+		newOdr.setStatus(reqOdr.getStatus());
 		newOdr.setPriority(reqOdr.getPriority());
-		
+
 		return orderRepo.save(newOdr);
 	}
 
-
-	@Override
-	public List<Order> getAllOrders(){
-		return orderRepo.findAll();
-	}
-	
-	
 }

@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminServiceServiceImpl implements AdminServiceService {
 
+	
 	private final HouseholdServiceRepo serviceRepo;
 	private final ServiceImageRepo serviceImageRepo;
 
@@ -36,12 +37,18 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 		HouseholdService service = serviceRepo.findByServiceIdAndActiveTrue(sid)
 				.orElseThrow(() -> new ServiceNotFoundException("Service not found with id: " + sid));
 
-		return new ServiceDetailsForEditDTOB(service.getServiceId(), service.getServiceName(), service.getShortDesc(),
-				service.getLongDesc(), service.getPrice(), service.getCategory());
+		return new ServiceDetailsForEditDTOB(
+				service.getServiceId(), 
+				service.getServiceName(), 
+				service.getShortDesc(),
+				service.getLongDesc(), 
+				service.getPrice(), 
+				service.getCategory()
+				);
 	}
 
 	@Override
-	public Long createService(CreateServiceRequestDTOB request, MultipartFile imageFile)
+	public Long createService(CreateServiceRequestDTOB request, MultipartFile[] images)
 			throws ImageNotUploadedException {
 
 		// Creating a service object
@@ -58,22 +65,23 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 		HouseholdService savedService = serviceRepo.save(service);
 
 		// Saving the images in service Image table
-		if(imageFile != null) {
-			try {
-				ServiceImage image = new ServiceImage();
-				image.setImage(imageFile.getBytes());
-				image.setMyService(savedService);
-	
-				serviceImageRepo.save(image);
-			} catch (IOException e) {
-	
-				throw new ImageNotUploadedException("Failed to add image bytes");
+		if (images != null && images.length > 0) {
+			for (MultipartFile file : images) {
+				try {
+					ServiceImage image = new ServiceImage();
+					image.setImage(file.getBytes());
+					image.setMyService(savedService);
+
+					serviceImageRepo.save(image);
+				} catch (IOException e) {
+
+					throw new ImageNotUploadedException("Failed to add image bytes");
+				}
 			}
 		}
 
 		return savedService.getServiceId();
 	}
-
 
 	@Override
 	public void deleteService(Long sid) {
@@ -82,10 +90,19 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 				.orElseThrow(() -> new ServiceNotFoundException("Service is not found with id: " + sid));
 		// soft delete
 		service.setActive(false);
+
+//		serviceImageRepo.deleteByMyServiceServiceId(sid);
+
+//		for(Vendor v : service.getMyVendors()) {
+//			v.getMyServices().remove(service);
+//		}
+//		//.getMyVendors().clear();
+
+//		serviceRepo.delete(service);
 	}
 
 	@Override
-	public void updateService(Long serviceId, UpdateServiceRequestDTOB dto,MultipartFile image) {
+	public void updateService(Long serviceId, UpdateServiceRequestDTOB dto) {
 
 		HouseholdService service = serviceRepo.findByServiceIdAndActiveTrue(serviceId)
 				.orElseThrow(() -> new ServiceNotFoundException("Service not found with serviceId: " + serviceId));
@@ -94,23 +111,7 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 		service.setShortDesc(dto.getShortDesc());
 		service.setLongDesc(dto.getLongDesc());
 		service.setPrice(dto.getPrice());
-		if(image != null) {
-			
-			try {
-				ServiceImage serviceImage = new ServiceImage();
-				serviceImage.setImage(image.getBytes());
-				serviceImage.setMyService(service);
-				
-				serviceImageRepo.save(serviceImage);
-				
-			} catch (IOException e) {
-				// TODO: handle exception
-				throw new ImageNotUploadedException("Failed to add image");
-			}
-		}
 
 	}
-
-	
 
 }

@@ -34,7 +34,7 @@ public class VendorServiceImpl implements VendorService{
 		
 		order.setMyVendor(vendor);
 		order.setStatus(Status.ASSIGNED);
-		orderRepo.save(order);
+		
 		return true;
 	}
 

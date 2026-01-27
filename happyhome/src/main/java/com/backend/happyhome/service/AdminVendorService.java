@@ -9,7 +9,7 @@ import com.backend.happyhome.dtos.VendorSummaryDTOE;
 
 public interface AdminVendorService {
 	
-	List<VendorSummaryDTOE> getAllVendors();
+	List<VendorDetailsAdminDTOE> getAllVendors();
 	VendorDetailsAdminDTOE getVendorDetailsById(Long vendorId);
 	void editVendorDetails(Long vendorId, AdminEditVendorRequestDTOE request);
 	List<AdminOrderDetailsDTOE> getVendorOrders(Long vendorId);

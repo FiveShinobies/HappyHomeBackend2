@@ -2,9 +2,9 @@ package com.backend.happyhome.dtos;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import com.backend.happyhome.entities.Language;
 import com.backend.happyhome.entities.enums.UserStatus;
 
 import lombok.Data;
@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class ConsumerDtoC {
 
+	private Long consumerId;
 	private String firstName;
 	private String lastName;
 	private String email;
@@ -21,5 +22,5 @@ public class ConsumerDtoC {
 	private UserStatus userStatus;
 	private Set<String> languages = new HashSet<>();
 	private int rewardPoints;
-	private List<AddressDto> address;
+	private AddressDto address;
 }

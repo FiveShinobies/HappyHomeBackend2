@@ -1,10 +1,10 @@
 package com.backend.happyhome.dtos;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class VendorFeedbackRequestDTOE {
 	
 	private Long orderId;

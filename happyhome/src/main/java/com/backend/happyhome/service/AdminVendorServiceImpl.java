@@ -39,17 +39,32 @@ public class AdminVendorServiceImpl implements AdminVendorService {
 	private final OrderRepo orderRepository;
 	
 	@Override
-	public List<VendorSummaryDTOE> getAllVendors() {
+	public List<VendorDetailsAdminDTOE> getAllVendors() {
 		return vendorRepository.findAll().stream().map(vendor ->{
+//			User user = vendor.getMyUser();
+//			Address address = vendorAddressRepository.findByMyUserUserId(user.getUserId())
+//					.orElse(null);
+//			
+//			VendorSummaryDTOE dto = new VendorSummaryDTOE();
+//			dto.setVendorId(vendor.getVendorId());
+//			dto.setName(user.getFirstName() + " " + user.getLastName());
+//			dto.setEmail(user.getEmail());
+//			dto.setCity(address != null ? address.getCity() : null);
+//			return dto;
 			User user = vendor.getMyUser();
 			Address address = vendorAddressRepository.findByMyUserUserId(user.getUserId())
 					.orElse(null);
 			
-			VendorSummaryDTOE dto = new VendorSummaryDTOE();
+			VendorDetailsAdminDTOE dto = new VendorDetailsAdminDTOE();
 			dto.setVendorId(vendor.getVendorId());
 			dto.setName(user.getFirstName() + " " + user.getLastName());
 			dto.setEmail(user.getEmail());
+			dto.setPhone(user.getPhone());
 			dto.setCity(address != null ? address.getCity() : null);
+			dto.setAddress(address != null ? address.getHomeNo() : null);
+			dto.setRating(vendorReviewRepository.findAverageRating(vendor.getVendorId()));
+			dto.setJoinDate(user.getDob());
+			
 			return dto;
 		}).toList();
 	}

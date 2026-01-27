@@ -15,12 +15,11 @@ public interface AdminServiceService {
 	
 	ServiceDetailsForEditDTOB getServiceDetailsById(Long sid);
 	
-//	Long createService(CreateServiceRequestDTOB request, MultipartFile[] images) throws ImageNotUploadedException;
-	Long createService(CreateServiceRequestDTOB request, MultipartFile images) throws ImageNotUploadedException;
+	Long createService(CreateServiceRequestDTOB request, MultipartFile[] images) throws ImageNotUploadedException;
 	
 	void deleteService(Long sid);
 	
-	void updateService(Long serviceId, UpdateServiceRequestDTOB dto, MultipartFile image) throws ImageNotUploadedException;
+	void updateService(Long serviceId, UpdateServiceRequestDTOB dto);
 	
 	
 }
