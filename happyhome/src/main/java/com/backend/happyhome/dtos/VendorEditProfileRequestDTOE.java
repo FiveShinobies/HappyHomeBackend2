@@ -4,9 +4,6 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 @Data
 public class VendorEditProfileRequestDTOE {
@@ -20,9 +17,10 @@ public class VendorEditProfileRequestDTOE {
     private String homeNo;
     private String city;
     private String state;
-    private String pincode;
+    private String pincode;	
+    private Integer experience;
 
-    private Set<Long> serviceIds;  
-    private Set<Long> languageIds;
+    private Set<String> serviceName;  
+    private Set<String> languageName;
     
-}	
+}
