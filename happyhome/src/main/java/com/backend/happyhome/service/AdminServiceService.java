@@ -20,7 +20,7 @@ public interface AdminServiceService {
 	
 	void deleteService(Long sid);
 	
-	void updateService(Long serviceId, UpdateServiceRequestDTOB dto);
+	void updateService(Long serviceId, UpdateServiceRequestDTOB dto, MultipartFile image) throws ImageNotUploadedException;
 	
 	
 }

@@ -6,6 +6,7 @@ import com.backend.happyhome.dtos.ConsumerAddressDetailsDTOB;
 import com.backend.happyhome.dtos.ConsumerPaymentDetailsDTOB;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
+import com.backend.happyhome.entities.HouseholdService;
 import com.backend.happyhome.entities.PaymentCard;
 import com.backend.happyhome.entities.PaymentUpi;
 
@@ -22,5 +23,6 @@ public class ConsumerDetailsForBookingDTOB {
 	
 	private List<ConsumerAddressDetailsDTOB> addresses;
 	
+	private HouseholdServiceDtoA service;
 	
 }

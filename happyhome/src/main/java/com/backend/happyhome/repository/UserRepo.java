@@ -16,5 +16,5 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	Optional<User> getByEmail(String email);
 	Optional<User> getByPhone(String phone);
 	List<User> findByRole(UserRole consumer);
-	List<Consumer> findByRole(UserRole consumer);
+	
 }

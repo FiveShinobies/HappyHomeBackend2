@@ -1,19 +1,14 @@
 package com.backend.happyhome.controller;
 
 import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,15 +20,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.happyhome.dtos.AdminEditVendorRequestDTOE;
 import com.backend.happyhome.dtos.AdminOrderDetailsDTOE;
-import com.backend.happyhome.dtos.VendorDetailsAdminDTOE;
-import com.backend.happyhome.dtos.VendorSummaryDTOE;
-import com.backend.happyhome.service.AdminVendorService;
+import com.backend.happyhome.dtos.ConsumerDtoC;
 import com.backend.happyhome.dtos.CreateServiceRequestDTOB;
 import com.backend.happyhome.dtos.HouseholdServicesListDTOB;
 import com.backend.happyhome.dtos.ServiceDetailsDTOB;
 import com.backend.happyhome.dtos.ServiceDetailsForEditDTOB;
 import com.backend.happyhome.dtos.UpdateServiceRequestDTOB;
+import com.backend.happyhome.dtos.VendorDetailsAdminDTOE;
+import com.backend.happyhome.dtos.VendorSummaryDTOE;
 import com.backend.happyhome.service.AdminServiceService;
+import com.backend.happyhome.service.AdminVendorService;
+import com.backend.happyhome.service.ConsumerService;
 import com.backend.happyhome.service.HouseholdServiceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -55,6 +52,8 @@ public class AdminController {
 
 	private final AdminVendorService adminVendorService;
 
+	private final ConsumerService consumerService;
+
 	// Get all vendors
 	@GetMapping("/vendors")
 	public ResponseEntity<List<VendorSummaryDTOE>> getAllVendors() {
@@ -67,16 +66,6 @@ public class AdminController {
 
 		return ResponseEntity.ok(adminVendorService.getVendorDetailsById(vendorId));
 	}
-	    // Get all vendors
-	    @GetMapping("/vendors")
-	    public ResponseEntity<List<VendorSummaryDTOE>> getAllVendors() {
-	        return ResponseEntity.ok(adminVendorService.getAllVendors());
-	    }
-
-	    //  Get vendor details by ID
-	    @GetMapping("/vendors/{vendorId}")
-	    public ResponseEntity<VendorDetailsAdminDTOE> getVendorDetailsById(
-	            @PathVariable Long vendorId) {
 
 	// Edit vendor details
 	@PatchMapping("/vendors/{vendorId}")
@@ -86,11 +75,6 @@ public class AdminController {
 		adminVendorService.editVendorDetails(vendorId, request);
 		return ResponseEntity.ok("Vendor updated successfully");
 	}
-	    //  Edit vendor details 
-	    @PatchMapping("/vendors/{vendorId}")
-	    public ResponseEntity<String> editVendorDetails(
-	            @PathVariable Long vendorId,
-	            @RequestBody AdminEditVendorRequestDTOE request) {
 
 	// Get vendor orders
 	@GetMapping("/vendors/{vendorId}/orders")
@@ -98,10 +82,6 @@ public class AdminController {
 
 		return ResponseEntity.ok(adminVendorService.getVendorOrders(vendorId));
 	}
-	    // Get vendor orders
-	    @GetMapping("/vendors/{vendorId}/orders")
-	    public ResponseEntity<List<AdminOrderDetailsDTOE>> getVendorOrders(
-	            @PathVariable Long vendorId) {
 
 	@GetMapping("/services")
 	public ResponseEntity<List<HouseholdServicesListDTOB>> getAllServices() {
@@ -118,62 +98,53 @@ public class AdminController {
 		return ResponseEntity.ok(adminServiceService.getServiceDetailsById(id));
 	}
 
-	//use this for testing in postman
-	@PostMapping(
-	        value = "/service/add",
-	        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-	)
-	
-	public ResponseEntity<?> createService(
-
-			@RequestPart("data") String data,
-
-	        @RequestPart(value = "image", required = false)
-	        MultipartFile imageFile
-	) throws JsonMappingException, JsonProcessingException {
-		
-		ObjectMapper mapper = new ObjectMapper();
-	    CreateServiceRequestDTOB request =
-	            mapper.readValue(data, CreateServiceRequestDTOB.class);
-
-	    try {
-	        Long serviceIdLong = adminServiceService.createService(request, imageFile);
-
-	        return ResponseEntity.status(HttpStatus.CREATED)
-	                .body(Map.of(
-	                        "message", "Service created successfully",
-	                        "service", serviceIdLong
-	                ));
-
-	    } catch (Exception e) {
-	        return ResponseEntity
-	                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body(e.getMessage());
-	    }
-	}
-	
-	//use this for real production
+	// use this for testing in postman
 //	@PostMapping(
 //	        value = "/service/add",
 //	        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
 //	)
+//	
 //	public ResponseEntity<?> createService(
 //
-//	        @Valid
-//	        @RequestPart("data") CreateServiceRequestDTOB request,
+//			@RequestPart("data") String data,
 //
 //	        @RequestPart(value = "image", required = false)
 //	        MultipartFile imageFile
-//	) {
+//	) throws JsonMappingException, JsonProcessingException {
+//		
+//		ObjectMapper mapper = new ObjectMapper();
+//	    CreateServiceRequestDTOB request =
+//	            mapper.readValue(data, CreateServiceRequestDTOB.class);
 //
-//	    Long serviceId = adminServiceService.createService(request, imageFile);
+//	    try {
+//	        Long serviceIdLong = adminServiceService.createService(request, imageFile);
 //
-//	    return ResponseEntity.status(HttpStatus.CREATED)
-//	            .body(Map.of(
-//	                    "message", "Service created successfully",
-//	                    "service", serviceId
-//	            ));
+//	        return ResponseEntity.status(HttpStatus.CREATED)
+//	                .body(Map.of(
+//	                        "message", "Service created successfully",
+//	                        "service", serviceIdLong
+//	                ));
+//
+//	    } catch (Exception e) {
+//	        return ResponseEntity
+//	                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//	                .body(e.getMessage());
+//	    }
 //	}
+//	
+	// use this for real production
+	@PostMapping(value = "/service/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> createService(
+
+			@Valid @RequestPart("data") CreateServiceRequestDTOB request,
+
+			@RequestPart(value = "image", required = false) MultipartFile imageFile) {
+
+		Long serviceId = adminServiceService.createService(request, imageFile);
+
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(Map.of("message", "Service created successfully", "service", serviceId));
+	}
 
 	@DeleteMapping("/service/{id}")
 	public ResponseEntity<?> deleteService(@PathVariable Long id) {
@@ -183,15 +154,31 @@ public class AdminController {
 		return ResponseEntity.ok(Map.of("message", "Service Deleted successfully"));
 	}
 
-	@PutMapping("/service/{serviceId}")
+	@PutMapping(value = "/service/{serviceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> updateService(@PathVariable Long serviceId,
-			@Valid @RequestBody UpdateServiceRequestDTOB request) {
+			@Valid @RequestPart("data") UpdateServiceRequestDTOB request,
+			@RequestPart(value = "image", required = false) MultipartFile imageFile) {
 
-		adminServiceService.updateService(serviceId, request);
+		adminServiceService.updateService(serviceId, request, imageFile);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(Map.of("message", "Service updated successfully", "service", serviceId));
 
+	}
+//	@PutMapping("/service/{serviceId}")
+//	public ResponseEntity<?> updateService(@PathVariable Long serviceId,
+//			@Valid @RequestBody UpdateServiceRequestDTOB request) {
+//		
+//		adminServiceService.updateService(serviceId, request);
+//		
+//		return ResponseEntity.status(HttpStatus.CREATED)
+//				.body(Map.of("message", "Service updated successfully", "service", serviceId));
+//		
+//	}
+
+	@GetMapping("/consumer/{id}")
+	ResponseEntity<ConsumerDtoC> getConsumerDetailsById(@PathVariable Long id) {
+		return new ResponseEntity<>(consumerService.getConsumerDetailsById(id), HttpStatus.OK);
 	}
 
 }

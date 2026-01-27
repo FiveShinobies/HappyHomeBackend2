@@ -25,9 +25,9 @@ public class ConsumerProfileDetailsDTOA {
 	
 	List<Address> addresses;
 	
-	List<PaymentUpi> upis;
+//	List<PaymentUpi> upis;
 	
-	List<PaymentCard> cards;
+//	List<PaymentCard> cards;
 	
 	UserImage image;
 	

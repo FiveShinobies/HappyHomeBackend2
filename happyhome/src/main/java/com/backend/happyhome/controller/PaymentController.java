@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/payments")
-@CrossOrigin(origins = "*")
 public class PaymentController {
 
 	private final RazorpayService rpService;
@@ -39,16 +38,17 @@ public class PaymentController {
 	private final ConsumerTransactionServiceImpl ctService;
 	
 	@PostMapping("/create-order")
-	public ResponseEntity<Map<String , Object>> createOrder(@RequestParam int amount, @RequestParam String currency , @RequestParam String cid ) throws RazorpayException 
+	public ResponseEntity<Map<String , Object>> createOrder(@RequestParam int amount, @RequestParam String currency , @RequestParam Long cid ) throws RazorpayException 
 	{
 
-	    Order order = rpService.createOrder(amount, currency, cid);
+	    Order order = rpService.createOrder(amount, currency, Long.toString(cid));
 	    
 	    return ResponseEntity.ok(order.toJson().toMap()); 
-	}
+	}	
 
 	//if verification successfull - place the order -- Response To be Decided
 	@PostMapping("/verify")
+	
 	public ResponseEntity<?> verifyPayment( @RequestBody VerifyPaymentRequestDTO verifyAndOrderRes) {
 	
 		RazorpayPaymentDTOA razorpayResponse = verifyAndOrderRes.getPayment();
@@ -73,13 +73,14 @@ public class PaymentController {
 			 ct.setStatus(TransactionStatus.SUCCESS);
 			 ct.setTimestamp(LocalDateTime.now());
 			
-			 ctService.addTrasaction(ct);
+			 com.backend.happyhome.entities.Order odrU = ctService.addTrasaction(ct);
+			 	
+			 return ResponseEntity.ok("order placed successfully");
 			 
-			 return ResponseEntity.ok("Order Placed");
 			 
 		}else {
 			System.out.println("Verification failed");
-			return ResponseEntity.ok("Order Cannot Be Placed");
+			return ResponseEntity.badRequest().body("order cannot be placed");
 		}
 		
 	}
