@@ -51,10 +51,6 @@ public class Order {
 	@OneToOne
 	@JoinColumn(name="consumer_transaction_id")
 	private ConsumerTransaction myConsumerTransaction;
-
-	@OneToOne
-	@JoinColumn(name="admin_transaction_id")
-	private AdminTransaction myAdminTransaction;
 	
 	@OneToOne
 	@JoinColumn(name="consumer_review_id")

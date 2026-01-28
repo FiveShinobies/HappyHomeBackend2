@@ -2,9 +2,6 @@ package com.backend.happyhome.dtos;
 
 import java.util.List;
 
-import com.backend.happyhome.entities.PaymentCard;
-import com.backend.happyhome.entities.PaymentUpi;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

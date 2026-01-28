@@ -16,7 +16,6 @@ import com.backend.happyhome.entities.HouseholdService;
 import com.backend.happyhome.entities.ServiceImage;
 import com.backend.happyhome.entities.Vendor;
 import com.backend.happyhome.repository.HouseholdServiceRepo;
-import com.backend.happyhome.repository.PaymentUpiRepo;
 import com.backend.happyhome.repository.ServiceImageRepo;
 
 import jakarta.transaction.Transactional;

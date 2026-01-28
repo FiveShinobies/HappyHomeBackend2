@@ -6,4 +6,6 @@ import com.backend.happyhome.entities.ConsumerTransaction;
 
 public interface ConsumerTransactionRepo extends JpaRepository<ConsumerTransaction, Long> {
 
+	ConsumerTransaction findByOrderIdOrderId(Long oid);
+	
 }
