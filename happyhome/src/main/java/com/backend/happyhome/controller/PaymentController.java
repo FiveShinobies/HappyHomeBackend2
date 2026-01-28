@@ -49,11 +49,14 @@ public class PaymentController {
 	//if verification successfull - place the order -- Response To be Decided
 	@PostMapping("/verify")
 	
-	public ResponseEntity<?> verifyPayment( @RequestBody VerifyPaymentRequestDTO verifyAndOrderRes) {
+	public ResponseEntity<?> verifyPayment( @RequestBody VerifyPaymentRequestDTO verifyAndOrderRes) throws RazorpayException {
 	
 		RazorpayPaymentDTOA razorpayResponse = verifyAndOrderRes.getPayment();
 		PlaceOrderDTOA newOrder = verifyAndOrderRes.getOrder();
 		
+		newOrder.setOrderPrice(rpService.paymentAmount(razorpayResponse.getRazorpayPaymentId()));
+		
+		System.out.println("Order price : " + newOrder.getOrderPrice());
 		System.out.println("Order ID    : " + razorpayResponse.getRazorpayOrderId());
 		System.out.println("Payment ID  : " + razorpayResponse.getRazorpayPaymentId());
 		System.out.println("Signature   : " + razorpayResponse.getRazorpaySignature());
@@ -66,6 +69,8 @@ public class PaymentController {
 			System.out.println("Verification successfull");			
 			 com.backend.happyhome.entities.Order odr = orderService.addOrder(newOrder);
 			 	
+			 
+			 
 			 ConsumerTransaction ct = new ConsumerTransaction();
 			 ct.setOrderId(odr);
 			 ct.setPaymentId(razorpayResponse.getRazorpayPaymentId());

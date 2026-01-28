@@ -19,6 +19,7 @@ import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.ConsumerReviewDTOA;
 import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.service.OrderService;
+import com.backend.happyhome.service.VendorService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,9 +29,11 @@ import lombok.RequiredArgsConstructor;
 public class OrderController {
 	
 	private final OrderService orderService;
-
+	private final VendorService vendorService;
+	
+	
 	@PatchMapping("/in-progress/{oid}")
-	public ResponseEntity<String> updateStatusToInProgresss(@RequestParam Long oid){
+	public ResponseEntity<String> updateStatusToInProgresss(@PathVariable Long oid){
 		
 		orderService.updateStatusToInProgress(oid);
 		
@@ -38,11 +41,13 @@ public class OrderController {
 	}
 	
 	@PatchMapping("/completed/{oid}")
-	public ResponseEntity<String> updateStatusToCompleted(@RequestParam Long oid){
+	public ResponseEntity<String> updateStatusToCompleted(@PathVariable Long oid){
 		
 		orderService.updateStatusToCompleted(oid);
 		
-		return ResponseEntity.ok("Status updated to Completed");
+		vendorService.payVendor(oid);
+		
+		return ResponseEntity.ok("Status updated to Completed and money added to vendor wallet");
 	}
 
 	@PatchMapping("/change-timeslot/{oId}")
