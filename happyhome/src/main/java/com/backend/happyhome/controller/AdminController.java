@@ -36,12 +36,8 @@ import com.backend.happyhome.service.AdminVendorService;
 import com.backend.happyhome.service.ConsumerService;
 import com.backend.happyhome.service.HouseholdServiceService;
 import com.backend.happyhome.service.OrderService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.backend.happyhome.service.admin_service.AdminOrderService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +56,9 @@ public class AdminController {
 
 	private final OrderService orderService;
 
+	private final AdminOrderService adService;
+
+	
 	// Get all vendors
 	@GetMapping("/vendors")
 	public ResponseEntity<List<VendorSummaryDTOE>> getAllVendors() {
@@ -190,4 +189,12 @@ public class AdminController {
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
+	
+	@GetMapping("/dashboard")
+	public ResponseEntity<?> getDashboard() {
+		return ResponseEntity.ok(adService.getDashboardData());
+	}
+	
+	
+	
 }
