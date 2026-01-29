@@ -8,14 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.happyhome.dto.OrderDTO;
+import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerDtoC;
 import com.backend.happyhome.entities.Order;
+import com.backend.happyhome.service.ConsumerBookingService;
 import com.backend.happyhome.service.ConsumerService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,11 +30,21 @@ public class ConsumerController {
 
 	private final ConsumerService consumerService;
 	
+	@PostMapping("/add-address/{cid}")
+	ResponseEntity<?> addAddress(@PathVariable Long cid , @RequestBody AddressDto ad){
+		
+		consumerService.addAddress(cid, ad);
+		
+		return ResponseEntity.ok("address added successfully");
+	}
+	
 	@GetMapping("/all")
 	ResponseEntity<List<ConsumerDtoC>> getAllConsumers(){
 		return new ResponseEntity<>(consumerService.getAllConsumers(),HttpStatus.OK);
 	}
 	
+	
+	// to be re written
 	@PutMapping("/{id}")
 	ResponseEntity<ConsumerDtoC> editConsumerDetails(@RequestBody ConsumerDtoC consumer,@PathVariable Long id){
 		return new ResponseEntity<>(consumerService.editConsumerDetails(consumer, id),HttpStatus.OK);
@@ -55,8 +68,8 @@ public class ConsumerController {
 	}
 	
 	@GetMapping("/profile/{cId}")
-	public ResponseEntity<?> getConsumerProfile(@PathVariable Long cId){
-		return ResponseEntity.ok(consumerService.getConsumerProfileDetailsById(cId));	
+	public ResponseEntity<ConsumerDtoC> getConsumerProfile(@PathVariable Long cId){
+		return ResponseEntity.ok(consumerService.getConsumerDetailsById(cId));	
 	}
 
 	

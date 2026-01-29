@@ -39,19 +39,6 @@ public class UserController {
 	}
 	
 	
-//	@PostMapping("/login")
-//	ResponseEntity<String> login(UserLoginDtoC userDto){
-//		User user = userService.isUserPresent(userDto);
-//		if(user != null) {
-//			HttpHeaders headers = new HttpHeaders();
-//			headers.add("Role", user.getRole().toString());
-//			ResponseEntity<String> res = new ResponseEntity<String>("Success", headers, HttpStatus.FOUND);
-//			return res;
-//		}else {
-//			return new ResponseEntity<>("Failed",HttpStatus.NOT_FOUND);
-//		}
-//	}
-	
 	@PostMapping("/signup/consumer")
 	ResponseEntity<String> signup(@RequestBody ConsumerRegisterDtoC user){
 		userService.registerConsumerUser(user);
