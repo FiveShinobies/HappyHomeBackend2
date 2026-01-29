@@ -161,6 +161,26 @@ public class UserServiceImpl implements UserService {
 		
 	}
 	
-	
+	@Override
+	public boolean changePassword(Long uid, String newPass , UserRole role) {
+		User u = null;		
+		if( role.equals(UserRole.CONSUMER)) {
+			System.out.println("its is consumer");
+			Consumer c = consumerRepo.findById(uid).orElseThrow(() -> new UserNotPresentException());
+			u = userRepo.findById(c.getMyUser().getUserId()).orElseThrow(() -> new UserNotPresentException());
+		}else if(role.equals(UserRole.VENDOR)) {			
+			System.out.println("its is vendor");
+			Vendor v = vendorRepo.findById(uid).orElseThrow(() -> new UserNotPresentException());
+			u = userRepo.findById(v.getMyUser().getUserId()).orElseThrow(() -> new UserNotPresentException());
+		}else {
+			System.out.println("its is admin");
+			u = userRepo.findById(uid).orElseThrow(() -> new UserNotPresentException());
+		}
+		
+		u.setPassword(newPass);
+		
+			userRepo.save(u);
+		return true;
+	}
 
 }
