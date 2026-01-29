@@ -2,18 +2,19 @@ package com.backend.happyhome.service;
 
 import org.springframework.stereotype.Service;
 
-import com.backend.happyhome.dtos.UserLoginDtoC;
-import com.backend.happyhome.dtos.VendorRegisterDtoC;
 import com.backend.happyhome.custom_exceptions.UserAlreadyPresentException;
 import com.backend.happyhome.custom_exceptions.UserNotPresentException;
 import com.backend.happyhome.dtos.ConsumerRegisterDtoC;
 import com.backend.happyhome.dtos.ServiceDtoC;
+import com.backend.happyhome.dtos.UserLoginDtoC;
+import com.backend.happyhome.dtos.VendorRegisterDtoC;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.HouseholdService;
 import com.backend.happyhome.entities.Language;
 import com.backend.happyhome.entities.User;
 import com.backend.happyhome.entities.Vendor;
+import com.backend.happyhome.entities.VendorWallet;
 import com.backend.happyhome.entities.enums.UserRole;
 import com.backend.happyhome.repository.AddressRepo;
 import com.backend.happyhome.repository.ConsumerRepo;
@@ -21,6 +22,7 @@ import com.backend.happyhome.repository.ServiceRepo;
 import com.backend.happyhome.repository.UserRepo;
 import com.backend.happyhome.repository.VendorRepo;
 import com.backend.happyhome.repository.language_repos.LanguageRepository;
+import com.backend.happyhome.repository.vendor_repos.VendorWalletRepo;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
 	private final AddressRepo addressRepo;
 	private final ServiceRepo serviceRepo;
 	private final LanguageRepository languageRepo;
+	private final VendorWalletRepo vwRepo;
 	
 	@Override
 	public User isUserPresent(UserLoginDtoC user) throws UserNotPresentException{
@@ -121,7 +124,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		
-		vendorRepo.save(vendor);
+		Vendor v = vendorRepo.save(vendor);
 		
 		Address address = new Address();
 		address.setCity(user.getAddress().getCity());
@@ -132,6 +135,30 @@ public class UserServiceImpl implements UserService {
 		address.setTown(user.getAddress().getTown());
 		
 		addressRepo.save(address);
+		
+		VendorWallet vw = new VendorWallet();
+		vw.setMyVendor(v);
+		vwRepo.save(vw);
+		
+	}
+
+	@Override
+	public Long giveRespectiveId(Long uid) {
+		
+		Consumer c = consumerRepo.findByMyUser_UserId(uid);
+		
+		if(c != null) {
+			return c.getConsumerId();
+		}
+		
+		Vendor v = vendorRepo.findByMyUserUserId(uid);
+		
+		if(v != null) {
+			return v.getVendorId();
+		}
+		
+		return uid;
+		
 	}
 	
 	

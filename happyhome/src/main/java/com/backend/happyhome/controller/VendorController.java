@@ -19,6 +19,7 @@ import com.backend.happyhome.dtos.VendorBankingResponseDTOE;
 import com.backend.happyhome.dtos.VendorEditProfileRequestDTOE;
 import com.backend.happyhome.dtos.VendorFeedbackRequestDTOE;
 import com.backend.happyhome.dtos.VendorProfileResponseDTOE;
+import com.backend.happyhome.dtos.vendor_dto.VendorWalletDTOA;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.service.OrderService;
 import com.backend.happyhome.service.VendorAddressService;
@@ -130,7 +131,21 @@ public class VendorController {
 			}
 	    }
 	    
-	 
+	    
+	    @GetMapping("/wallet-balance/{vid}")
+	    public ResponseEntity<?> getWalletBalance(@PathVariable Long vid) {
+	    	
+	    	VendorWalletDTOA v =  new VendorWalletDTOA();
+	    	v.setBalance(vendorService.getWallet(vid).getBalance()) ;
+	  
+	    	return ResponseEntity.ok(v);
+	    	
+	    }
+	    
+	    @GetMapping("/dashboard/{vid}")
+	    public ResponseEntity<?> getDashboard(@PathVariable Long vid){
+	    	return ResponseEntity.ok(vendorService.dashboardData(vid));
+	    }
 	    
 	    
 }

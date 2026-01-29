@@ -23,24 +23,11 @@ import com.backend.happyhome.repository.UserRepo;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.backend.happyhome.dtos.ConsumerProfileDetailsDTOA;
 import com.backend.happyhome.entities.Language;
-import com.backend.happyhome.entities.Order;
-import com.backend.happyhome.entities.PaymentCard;
-import com.backend.happyhome.entities.PaymentUpi;
-import com.backend.happyhome.entities.User;
+
 import com.backend.happyhome.entities.UserImage;
-import com.backend.happyhome.entities.enums.UserRole;
-import com.backend.happyhome.repository.AddressRepo;
-import com.backend.happyhome.repository.ConsumerRepo;
 import com.backend.happyhome.repository.LanguageRepo;
-import com.backend.happyhome.repository.OrderRepo;
-import com.backend.happyhome.repository.PaymentCardRepo;
-import com.backend.happyhome.repository.PaymentUpiRepo;
 import com.backend.happyhome.repository.UserImageRepo;
-import com.backend.happyhome.repository.UserRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,10 +40,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 	private final UserRepo userRepo;
 	private final AddressRepo addressRepo;
 	private final OrderRepo orderRepo;
-		private final PaymentUpiRepo upiRepo;
-	
-	private final PaymentCardRepo cardRepo;
-	
 	private final UserImageRepo imgRepo;
 	
 	private final LanguageRepo langRepo;
@@ -201,13 +184,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 		
 		List<Address> adrs = addressRepo.findByMyUserUserId(uid);
 		cpd.setAddresses(adrs);
-		 
-//		List<PaymentUpi> upis = upiRepo.findByMyUserUserId(uid);
-//		cpd.setUpis(upis);
-//		
-//		List<PaymentCard> cards = cardRepo.findByMyUserUserId(uid);
-//		cpd.setCards(cards);
-		 
+	 
 		UserImage img =  imgRepo.findById(uid).orElse(null) ; 
 		cpd.setImage(img);
 		

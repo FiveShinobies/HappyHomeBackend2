@@ -5,8 +5,7 @@ import java.util.List;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.Language;
-import com.backend.happyhome.entities.PaymentCard;
-import com.backend.happyhome.entities.PaymentUpi;
+
 import com.backend.happyhome.entities.UserImage;
 
 import jakarta.validation.constraints.NotNull;
@@ -24,19 +23,9 @@ public class ConsumerProfileDetailsDTOA {
 	Consumer consumer;
 	
 	List<Address> addresses;
-	
-//	List<PaymentUpi> upis;
-	
-//	List<PaymentCard> cards;
-	
+
 	UserImage image;
 	
 	List<Language> languages;
 	
 }
-
-//	- [ ]  getConsumerDetailsById
-//	    - [ ]  getConsumerAddresses
-//	    - [ ]  getPaymentDetails
-//	    - [ ]  getImage
-//	    - [ ]  getLanguages

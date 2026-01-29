@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.razorpay.Order;
+import com.razorpay.Payment;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 
@@ -33,5 +34,19 @@ public class RazorpayService {
 
         return client.orders.create(jsonObj);
     }
+	
+	
+	public Double paymentAmount(String pid) throws RazorpayException {
+		
+		 RazorpayClient client = new RazorpayClient(apiKey, apiSecret);
+		
+		 Payment payment = client.payments
+			        .fetch(pid);
+		 
+		 int amountInPaise = payment.get("amount");
+		 
+		 return (amountInPaise/100.0);
+	}
+	
 	
 }

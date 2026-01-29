@@ -31,6 +31,8 @@ public class CorsConfig {
         // (Optional but helpful)
         config.setMaxAge(3600L);
 
+        config.setExposedHeaders(List.of("Role"));
+        
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
