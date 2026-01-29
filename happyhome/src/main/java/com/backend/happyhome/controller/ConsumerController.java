@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerDtoC;
+import com.backend.happyhome.dtos.consumer_dto.EditConsumerProfileRequestD;
 import com.backend.happyhome.entities.Order;
-import com.backend.happyhome.service.ConsumerBookingService;
 import com.backend.happyhome.service.ConsumerService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,11 +32,27 @@ public class ConsumerController {
 	private final ConsumerService consumerService;
 	
 	@PostMapping("/add-address/{cid}")
-	ResponseEntity<?> addAddress(@PathVariable Long cid , @RequestBody AddressDto ad){
+	ResponseEntity<String> addAddress(@PathVariable Long cid , @RequestBody AddressDto ad){
 		
 		consumerService.addAddress(cid, ad);
 		
 		return ResponseEntity.ok("address added successfully");
+	}
+	
+	@PutMapping("/edit-address/{aid}")
+	ResponseEntity<String> editAddress(@PathVariable Long aid , @RequestBody AddressDto ad){
+		
+		consumerService.editAddress(aid, ad);
+		
+		return ResponseEntity.ok("address edited successfully");
+	}
+	
+	@DeleteMapping("/delete-address/{aid}")
+	ResponseEntity<String> deleteAddress(@PathVariable Long aid){
+		
+		consumerService.deleteAddress(aid);
+		
+		return ResponseEntity.ok("address deleted successfully");
 	}
 	
 	@GetMapping("/all")
@@ -45,10 +62,12 @@ public class ConsumerController {
 	
 	
 	// to be re written
-	@PutMapping("/{id}")
-	ResponseEntity<ConsumerDtoC> editConsumerDetails(@RequestBody ConsumerDtoC consumer,@PathVariable Long id){
+	@PutMapping("/edit/{id}")
+	ResponseEntity<EditConsumerProfileRequestD> editConsumerDetails(@RequestBody EditConsumerProfileRequestD consumer,@PathVariable Long id){
 		return new ResponseEntity<>(consumerService.editConsumerDetails(consumer, id),HttpStatus.OK);
 	}
+	
+	
 	
 	@GetMapping("/{id}/allOrders")
 	ResponseEntity<List<OrderDTO>> getAllOrdersOfConsumer(@PathVariable Long id){
@@ -63,7 +82,7 @@ public class ConsumerController {
 	}
 	
 	@GetMapping("/order/{oId}")
-	ResponseEntity<Order> getOrderOfConsumer(@PathVariable Long oId){
+	ResponseEntity<OrderDTO> getOrderOfConsumer(@PathVariable Long oId){
 		return new ResponseEntity<>(consumerService.getOrderOfConsumer(oId),HttpStatus.OK);
 	}
 	
