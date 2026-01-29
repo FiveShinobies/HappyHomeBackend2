@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
+import com.backend.happyhome.custom_exceptions.UserNotPresentException;
 import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerDtoC;
-import com.backend.happyhome.dtos.ConsumerProfileDetailsDTOA;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.Order;
@@ -21,11 +21,9 @@ import com.backend.happyhome.repository.ConsumerRepo;
 import com.backend.happyhome.repository.OrderRepo;
 import com.backend.happyhome.repository.UserRepo;
 
-import java.util.Optional;
 
 import com.backend.happyhome.entities.Language;
 
-import com.backend.happyhome.entities.UserImage;
 import com.backend.happyhome.repository.LanguageRepo;
 import com.backend.happyhome.repository.UserImageRepo;
 
@@ -41,8 +39,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 	private final AddressRepo addressRepo;
 	private final OrderRepo orderRepo;
 	private final UserImageRepo imgRepo;
-	
 	private final LanguageRepo langRepo;
+
 
 	@Override
 	public List<ConsumerDtoC> getAllConsumers() {
@@ -170,29 +168,22 @@ public class ConsumerServiceImpl implements ConsumerService {
 		return orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
 	}
 
-	
+
 	@Override
-	public ConsumerProfileDetailsDTOA getConsumerProfileDetailsById(Long cid) {
+	public boolean addAddress(Long cid , AddressDto address) {
 		
-		ConsumerProfileDetailsDTOA cpd = new ConsumerProfileDetailsDTOA();
+		User user = consumerRepo.findById(cid).orElseThrow(() -> new UserNotPresentException()).getMyUser();
 		
-		Optional<Consumer> c = consumerRepo.findById(cid);
-		Consumer cr =  c.orElseThrow();
-		cpd.setConsumer(cr);
+		Address ad = new Address();
+		ad.setCity(address.getCity());
+		ad.setHomeNo(address.getHomeNo());
+		ad.setPincode(address.getPincode());
+		ad.setState(address.getState());
+		ad.setTown(address.getTown());
+		ad.setMyUser(user);
+		addressRepo.save(ad);
 		
-		Long uid = cr.getMyUser().getUserId();
-		
-		List<Address> adrs = addressRepo.findByMyUserUserId(uid);
-		cpd.setAddresses(adrs);
-	 
-		UserImage img =  imgRepo.findById(uid).orElse(null) ; 
-		cpd.setImage(img);
-		
-		List<Language> langs = langRepo.findByUsersUserId(uid);
-		cpd.setLanguages(langs);
-		
-		return cpd;
-		
+		return true;
 	}
 
 	
