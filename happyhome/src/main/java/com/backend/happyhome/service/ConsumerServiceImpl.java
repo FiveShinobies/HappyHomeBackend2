@@ -1,33 +1,33 @@
 package com.backend.happyhome.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.happyhome.controller.ConsumerController;
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
+import com.backend.happyhome.custom_exceptions.UserNotPresentException;
+import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerDtoC;
-import com.backend.happyhome.dtos.ConsumerProfileDetailsDTOA;
+import com.backend.happyhome.dtos.consumer_dto.EditConsumerProfileRequestD;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
+import com.backend.happyhome.entities.Language;
 import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.entities.User;
 import com.backend.happyhome.entities.enums.UserRole;
 import com.backend.happyhome.repository.AddressRepo;
 import com.backend.happyhome.repository.ConsumerRepo;
-import com.backend.happyhome.repository.OrderRepo;
-import com.backend.happyhome.repository.UserRepo;
-
-import java.util.Optional;
-
-import com.backend.happyhome.entities.Language;
-
-import com.backend.happyhome.entities.UserImage;
 import com.backend.happyhome.repository.LanguageRepo;
+import com.backend.happyhome.repository.OrderRepo;
 import com.backend.happyhome.repository.UserImageRepo;
+import com.backend.happyhome.repository.UserRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,7 +41,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 	private final AddressRepo addressRepo;
 	private final OrderRepo orderRepo;
 	private final UserImageRepo imgRepo;
-	
 	private final LanguageRepo langRepo;
 
 	@Override
@@ -66,6 +65,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 			List<Address> address = addressRepo.findByMyUserUserId(u.getUserId());
 			for(Address ad : address) {
 				AddressDto x = new AddressDto();
+				x.setAddressId(ad.getAddressId());
 				x.setCity(ad.getCity());
 				x.setHomeNo(ad.getHomeNo());
 				x.setPincode(ad.getPincode());
@@ -106,6 +106,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 		List<Address> address = addressRepo.findByMyUserUserId(u.getUserId());
 		for(Address ad : address) {
 			AddressDto x = new AddressDto();
+			x.setAddressId(ad.getAddressId());
 			x.setCity(ad.getCity());
 			x.setHomeNo(ad.getHomeNo());
 			x.setPincode(ad.getPincode());
@@ -120,45 +121,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 		return dto;
 	}
 
-	@Override
-	public ConsumerDtoC editConsumerDetails(ConsumerDtoC dto,Long cId) {
-		Consumer c = consumerRepo.findById(cId).orElseThrow(()-> new ConsumerNotFoundException());
-		
-		User user = c.getMyUser();
-		//map dto to entity
-		user.setDob(dto.getDob());
-		user.setEmail(dto.getEmail());
-		user.setFirstName(dto.getFirstName());
-		for(Language lang : user.getLanguages()) {
-			dto.getLanguages().add(lang.getLangName());
-		}
-		user.setLastName(dto.getLastName());
-		user.setPassword(dto.getPassword());
-		user.setPhone(dto.getPhone());
-		user.setUserStatus(dto.getUserStatus());
-		
-		userRepo.save(user);
-		
-		c.setRewardPoints(dto.getRewardPoints());
-		consumerRepo.save(c);
-		
-		List<AddressDto> address2 = dto.getAddress();
-		
-		for(AddressDto address : address2 ) {
-			
-			Address ad = new Address();
-			ad.setCity(address.getCity());
-			ad.setHomeNo(address.getHomeNo());
-			ad.setPincode(address.getPincode());
-			ad.setState(address.getState());
-			ad.setTown(address.getTown());
-			ad.setMyUser(user);
-			
-			addressRepo.save(ad);
-			
-		}
-		return dto;
-	}
 
 	@Override
 	public List<Order> getAllOrdersOfConsumer(Long cId) {
@@ -166,36 +128,126 @@ public class ConsumerServiceImpl implements ConsumerService {
 		return orderRepo.findByMyConsumer(myConsumer);
 	}
 	
-	public Order getOrderOfConsumer(Long oId) {
-		return orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
+	public OrderDTO getOrderOfConsumer(Long oId) {
+		return ConsumerController.mapToOrderDTO(orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist()));
 	}
 
-	
+
 	@Override
-	public ConsumerProfileDetailsDTOA getConsumerProfileDetailsById(Long cid) {
+	public boolean addAddress(Long cid , AddressDto address) {
 		
-		ConsumerProfileDetailsDTOA cpd = new ConsumerProfileDetailsDTOA();
+		User user = consumerRepo.findById(cid).orElseThrow(() -> new UserNotPresentException()).getMyUser();
 		
-		Optional<Consumer> c = consumerRepo.findById(cid);
-		Consumer cr =  c.orElseThrow();
-		cpd.setConsumer(cr);
+		Address ad = new Address();
+		ad.setCity(address.getCity());
+		ad.setHomeNo(address.getHomeNo());
+		ad.setPincode(address.getPincode());
+		ad.setState(address.getState());
+		ad.setTown(address.getTown());
+		ad.setMyUser(user);
+		addressRepo.save(ad);
 		
-		Long uid = cr.getMyUser().getUserId();
-		
-		List<Address> adrs = addressRepo.findByMyUserUserId(uid);
-		cpd.setAddresses(adrs);
-	 
-		UserImage img =  imgRepo.findById(uid).orElse(null) ; 
-		cpd.setImage(img);
-		
-		List<Language> langs = langRepo.findByUsersUserId(uid);
-		cpd.setLanguages(langs);
-		
-		return cpd;
-		
+		return true;
 	}
 
-	
+	@Override
+	public boolean editAddress(Long aid, AddressDto ad) {
+		
+		Address a = addressRepo.findById(aid).orElseThrow();
+		
+		a.setCity(ad.getCity());
+		a.setHomeNo(ad.getHomeNo());
+		a.setPincode(ad.getPincode());
+		a.setState(ad.getState());
+		a.setTown(ad.getTown());
+
+		addressRepo.save(a);
+
+		return true;
+	}
+
+	@Override
+	public boolean deleteAddress(Long aid) {
+		Address a = addressRepo.findById(aid).orElse(null);
+		addressRepo.delete(a);		
+		return true;
+	}
+
+	@Override
+	public EditConsumerProfileRequestD editConsumerDetails(
+	        EditConsumerProfileRequestD dto, Long cId) {
+
+	    Consumer c = consumerRepo.findById(cId)
+	            .orElseThrow(ConsumerNotFoundException::new);
+
+	    User user = c.getMyUser();
+
+	    // basic fields
+	    user.setFirstName(dto.getFirstName());
+	    user.setLastName(dto.getLastName());
+	    user.setEmail(dto.getEmail());
+	    user.setPhone(dto.getPhoneNumber());
+	    user.setDob(dto.getDateOfBirth());
+
+	    // languages
+	    Set<Language> managedLanguages = new HashSet<>();
+
+	    for (String langName : dto.getLanguages()) {
+	        Language language = langRepo.findByLangName(langName)
+	                .orElseThrow(() -> 
+	                    new RuntimeException("Language not found: " + langName)
+	                );
+	        managedLanguages.add(language);
+	    }
+
+	    user.setLanguages(managedLanguages);
+	    
+	    
+	    
+	    userRepo.save(user);
+
+	    return dto; // or map back response DTO
+	}
 
 
 }
+
+//	@Override
+//	public ConsumerDtoC editConsumerDetails(ConsumerDtoC dto,Long cId) {
+//		Consumer c = consumerRepo.findById(cId).orElseThrow(()-> new ConsumerNotFoundException());
+//		
+//		User user = c.getMyUser();
+//		//map dto to entity
+//		user.setDob(dto.getDob());
+//		user.setEmail(dto.getEmail());
+//		user.setFirstName(dto.getFirstName());
+//		for(Language lang : user.getLanguages()) {
+//			dto.getLanguages().add(lang.getLangName());
+//		}
+//		user.setLastName(dto.getLastName());
+//		user.setPassword(dto.getPassword());
+//		user.setPhone(dto.getPhone());
+//		user.setUserStatus(dto.getUserStatus());
+//		
+//		userRepo.save(user);
+//		
+//		c.setRewardPoints(dto.getRewardPoints());
+//		consumerRepo.save(c);
+//		
+//		List<AddressDto> address2 = dto.getAddress();
+//		
+//		for(AddressDto address : address2 ) {
+//			
+//			Address ad = new Address();
+//			ad.setCity(address.getCity());
+//			ad.setHomeNo(address.getHomeNo());
+//			ad.setPincode(address.getPincode());
+//			ad.setState(address.getState());
+//			ad.setTown(address.getTown());
+//			ad.setMyUser(user);
+//			
+//			addressRepo.save(ad);
+//			
+//		}
+//		return dto;
+//	}

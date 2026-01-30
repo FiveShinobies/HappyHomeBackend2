@@ -51,7 +51,7 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
 		User user = vendor.getMyUser();
 
 		List<AddressDto> address = addressRepo.findByMyUserUserId(userId).stream()
-				.map(a -> new AddressDto(a.getHomeNo(), a.getTown(), a.getCity(), a.getState(), a.getPincode()))
+				.map(a -> new AddressDto(a.getAddressId(),a.getHomeNo(), a.getTown(), a.getCity(), a.getState(), a.getPincode()))
 				.toList();
 
 		response.setFirstName(user.getFirstName());
