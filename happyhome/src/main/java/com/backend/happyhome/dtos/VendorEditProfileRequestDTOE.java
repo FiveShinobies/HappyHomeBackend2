@@ -18,9 +18,16 @@ public class VendorEditProfileRequestDTOE {
     private String city;
     private String state;
     private String pincode;	
-    private Integer experience;
+    
 
-    private Set<String> serviceName;  
-    private Set<String> languageName;
+    private Set<Long> servicesProvided;  
+    private Set<String> languages;
+    
+    private String accountHolderName;
+    private String accountNumber;
+    private String ifscCode;
+    private String bankName;
+    private String branchName;
+   
     
 }

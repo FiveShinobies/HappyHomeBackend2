@@ -39,7 +39,7 @@ public class Vendor {
 	@Column(name = "experience", nullable = false)
 	private Integer experience;
 
-	@ManyToMany(cascade=CascadeType.ALL)
+	@ManyToMany(cascade=CascadeType.MERGE)
 	@JoinTable(name = "vendor_service" , joinColumns = @JoinColumn(name = "vendor_id") , inverseJoinColumns = @JoinColumn(name = "service_id"))
 	private Set<HouseholdService> myServices = new HashSet<>();
 	
