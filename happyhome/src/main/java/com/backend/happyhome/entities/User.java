@@ -63,14 +63,9 @@ public class User implements UserDetails{
 	@NonNull
 	private UserRole role;
 
-	@ManyToMany(cascade= {CascadeType.PERSIST,CascadeType.MERGE})
+	@ManyToMany
 	@JoinTable(name = "user_language" , joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="lang_id"))
 	private Set<Language> languages = new HashSet<Language>();
-	{
-		Language lang = new Language();
-		lang.setLangName("English");
-		languages.add(lang);
-	}
 
 	@Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

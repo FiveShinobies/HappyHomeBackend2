@@ -3,11 +3,9 @@ package com.backend.happyhome.dtos;
 import java.time.LocalDate;
 import java.util.Set;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class VendorEditProfileRequestDTOE {
 	
 	private String firstName;
@@ -19,9 +17,10 @@ public class VendorEditProfileRequestDTOE {
     private String homeNo;
     private String city;
     private String state;
-    private String pincode;
+    private String pincode;	
+    private Integer experience;
 
-    private Set<Long> serviceIds;  
-    private Set<Long> languageIds;
+    private Set<String> serviceName;  
+    private Set<String> languageName;
     
-}	
+}

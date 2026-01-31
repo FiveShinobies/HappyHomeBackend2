@@ -10,18 +10,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.happyhome.dtos.ConsumerRegisterDtoC;
+import com.backend.happyhome.dtos.LoginResponseDtoC;
 import com.backend.happyhome.dtos.UserLoginDtoC;
 import com.backend.happyhome.dtos.VendorRegisterDtoC;
+import com.backend.happyhome.dtos.user_dto.UserPasswordChangeDTOA;
 import com.backend.happyhome.entities.User;
 
 import com.backend.happyhome.entities.enums.UserRole;
 import com.backend.happyhome.security.JwtUtil;
 
+import com.backend.happyhome.entities.enums.UserRole;
 import com.backend.happyhome.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,16 +41,17 @@ public class UserController {
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtil jwtUtil;
 	
+	
 	@PostMapping("/login")
-	ResponseEntity<String> login(UserLoginDtoC userDto){
+	ResponseEntity<LoginResponseDtoC> login(@RequestBody UserLoginDtoC userDto){
 		User user = userService.isUserPresent(userDto);
 		if(user != null) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("Role", user.getRole().toString());
-			ResponseEntity<String> res = new ResponseEntity<String>("Success", headers, HttpStatus.FOUND);
+			ResponseEntity<LoginResponseDtoC> res = new ResponseEntity<LoginResponseDtoC>(new LoginResponseDtoC("Success",userService.giveRespectiveId(user.getUserId())), headers, HttpStatus.OK);
 			return res;
 		}else {
-			return new ResponseEntity<>("Failed",HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new LoginResponseDtoC("Failed",null),HttpStatus.NOT_FOUND);
 		}
 		
 	ResponseEntity<LoginResponseDtoC> login(@RequestBody UserLoginDtoC userDto){
@@ -65,15 +72,26 @@ public class UserController {
 
 	}
 	
+	
 	@PostMapping("/signup/consumer")
-	ResponseEntity<String> signup(ConsumerRegisterDtoC user){
+	ResponseEntity<String> signup(@RequestBody ConsumerRegisterDtoC user){
 		userService.registerConsumerUser(user);
 		return new ResponseEntity<String>("Consumer Added",HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/signup/vendor")
-	ResponseEntity<String> signup(VendorRegisterDtoC user){
+	ResponseEntity<String> signup(@RequestBody VendorRegisterDtoC user){
 		userService.registerVendorUser(user);
 		return new ResponseEntity<String>("Vendor Added",HttpStatus.CREATED);
 	}
+	
+	@PutMapping("/user/{id}/password")
+	ResponseEntity<?> changePassword(@PathVariable Long id , @RequestBody UserPasswordChangeDTOA userInfo){
+		System.out.println(id + "  " + userInfo.getNewPassword() + " "  + userInfo.getRole());
+		userService.changePassword(id, userInfo.getNewPassword() , UserRole.valueOf(userInfo.getRole()));
+		
+		return ResponseEntity.ok("password changed");
+	}
+	
 }
+

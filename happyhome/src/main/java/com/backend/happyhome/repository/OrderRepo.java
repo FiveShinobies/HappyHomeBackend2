@@ -21,10 +21,12 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
 	
 	List<Order> findByMyVendorVendorId(Long vendorId);
 
-	List<OrderDtoC> findByStatus(Status status);
+	List<Order> findByStatus(Status status);
 
 	List<Order> findByMyConsumer(Consumer myConsumer);
 
 	List<Order> findByMyConsumerConsumerId(Long cid);	
+	
+	List<Order> findAll();
 	
 }

@@ -16,21 +16,23 @@ public class CorsConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        // Frontend origin (Vite / React)
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        // ✅ Allow ALL origins (even with credentials)
+        config.setAllowedOriginPatterns(List.of("*"));
 
-        // Allowed HTTP methods
-        config.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
-        );
+        // ✅ Allow ALL HTTP methods
+        config.setAllowedMethods(List.of("*"));
 
-        // Allowed headers
+        // ✅ Allow ALL headers
         config.setAllowedHeaders(List.of("*"));
 
-        // Allow cookies / authorization headers
+        // ✅ Allow cookies, Authorization headers, etc.
         config.setAllowCredentials(true);
 
-        // Register CORS configuration
+        // (Optional but helpful)
+        config.setMaxAge(3600L);
+
+        config.setExposedHeaders(List.of("Role"));
+        
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

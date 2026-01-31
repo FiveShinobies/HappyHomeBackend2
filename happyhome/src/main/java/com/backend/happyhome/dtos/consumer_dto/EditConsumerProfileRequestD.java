@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Data
@@ -27,7 +29,8 @@ public class EditConsumerProfileRequestD {
 
     @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
-
+    
+	private Set<String> languages = new HashSet<>();
    
 }
 

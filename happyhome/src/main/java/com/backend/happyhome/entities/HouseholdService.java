@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.backend.happyhome.entities.enums.Category;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,7 +39,7 @@ public class HouseholdService {
 	@Column(name="service_id")
 	private Long serviceId;
 
-	@Column(name="service_name",nullable = false)
+	@Column(name="service_name",nullable = false, unique = true)
 	private String serviceName;
 	
 	@Column(name="short_desc",nullable = false)
@@ -55,10 +56,17 @@ public class HouseholdService {
 	@Column(name="category",nullable = false)
 	private Category category;
 
+	@Column(name="active",nullable = false)
+	private boolean active = true;
+	
+	
 	@ManyToMany(mappedBy = "myServices")
 	private Set<Vendor> myVendors = new HashSet<>();
 
-	@OneToMany(mappedBy = "myServices")
+	@OneToMany(
+			mappedBy = "myServices",
+			cascade = CascadeType.ALL,
+		    orphanRemoval = true)
 	private Set<Order> myOrders = new HashSet<>();
 	
 	

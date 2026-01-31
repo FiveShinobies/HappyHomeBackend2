@@ -1,31 +1,46 @@
 package com.backend.happyhome.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.backend.happyhome.controller.ConsumerController;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
+import com.backend.happyhome.custom_exceptions.OrderDoesNotExistException;
 import com.backend.happyhome.custom_exceptions.VendorDoesNotExistException;
+import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.dtos.vendor_dto.VendorDashboardDTOA;
 import com.backend.happyhome.entities.Address;
+import com.backend.happyhome.entities.ConsumerTransaction;
 import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.entities.Vendor;
 import com.backend.happyhome.entities.VendorReview;
+import com.backend.happyhome.entities.VendorTransaction;
+import com.backend.happyhome.entities.VendorWallet;
 import com.backend.happyhome.entities.enums.Status;
+import com.backend.happyhome.entities.enums.TransactionStatus;
 import com.backend.happyhome.repository.OrderRepo;
 import com.backend.happyhome.repository.VendorRepo;
+import com.backend.happyhome.repository.consumer_repos.ConsumerTransactionRepo;
+import com.backend.happyhome.repository.vendor_repos.VendorTransactionRepo;
+import com.backend.happyhome.repository.vendor_repos.VendorWalletRepo;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class VendorServiceImpl implements VendorService{
 
 	private final OrderRepo orderRepo;
 	private final VendorRepo vendorRepo;
-	
-	VendorServiceImpl(OrderRepo orderRepo, VendorRepo vendorRepo){
-		this.orderRepo = orderRepo;
-		this.vendorRepo = vendorRepo;
-	}
+	private final ConsumerTransactionRepo ctRepo;
+	private final VendorTransactionRepo vtRepo;
+	private final VendorWalletRepo vwRepo;
 	
 	@Override
 	public boolean acceptRequest(Long oId, Long vId) throws OrderDoesNotExist{
@@ -34,7 +49,7 @@ public class VendorServiceImpl implements VendorService{
 		
 		order.setMyVendor(vendor);
 		order.setStatus(Status.ASSIGNED);
-		
+		orderRepo.save(order);
 		return true;
 	}
 
@@ -68,5 +83,50 @@ public class VendorServiceImpl implements VendorService{
 		return address;
 	}
 
+	@Override
+	public boolean payVendor(Long oid) {
+		ConsumerTransaction ct = ctRepo.findByOrderIdOrderId(oid);
+		Order o = orderRepo.findById(oid).orElseThrow(()-> new OrderDoesNotExistException("Order Not Found"));
+		Vendor v = vendorRepo.findById(o.getMyVendor().getVendorId()).orElseThrow(() -> new VendorDoesNotExistException());
+
+		VendorTransaction vt = new VendorTransaction();
+		vt.setOrderId(o);
+		vt.setAmount(ct.getAmount()*0.9); //10% our cut
+		vt.setStatus(TransactionStatus.SUCCESS);
+		vt.setTimestamp(LocalDateTime.now());
+		
+		vt = vtRepo.save(vt);
+		
+		VendorWallet vw = vwRepo.findByMyVendorVendorId(v.getVendorId()); 
+		vw.setBalance( vw.getBalance() + vt.getAmount());
+				
+		return (vwRepo.save(vw) != null);
+	}
+
+	@Override
+	public VendorWallet getWallet(Long vid) {
+		return vwRepo.findByMyVendorVendorId(vid);		
+	}
+
+	@Override
+	public VendorDashboardDTOA dashboardData(Long vid) {
+		
+		Vendor v = vendorRepo.findById(vid).orElseThrow(()-> new VendorDoesNotExistException());
+		List<Order> orders = orderRepo.findByMyVendorVendorId(vid);
+		List<OrderDTO> orderDtoList = new ArrayList<>();
+		Double amt = vwRepo.findByMyVendorVendorId(vid).getBalance();
+		for(Order o : orders) {			
+			orderDtoList.add(ConsumerController.mapToOrderDTO(o));
+		}
+		
+		VendorDashboardDTOA res = new VendorDashboardDTOA();
+		res.setOrder(orderDtoList);
+		res.setBalance(amt);
+		return res;
+	}
+	
+	
+	
+	
 	
 }

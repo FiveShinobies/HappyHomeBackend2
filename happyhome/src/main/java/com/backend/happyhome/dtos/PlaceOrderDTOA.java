@@ -2,10 +2,7 @@ package com.backend.happyhome.dtos;
 
 import java.time.LocalDateTime;
 
-import com.backend.happyhome.entities.AdminTransaction;
-import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.enums.Priority;
-import com.backend.happyhome.entities.enums.Status;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -32,13 +29,6 @@ public class PlaceOrderDTOA {
 	@NotNull
 	private Double orderPrice;
 	
-	private Status status = Status.UNASSIGNED;
-	
 	private Priority priority = Priority.NORMAL;
-	
-//	private Long consumerTransactionId;
-//	
-//	private Long adminTransactionId;
-	
 	
 }

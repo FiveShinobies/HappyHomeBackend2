@@ -3,6 +3,8 @@ package com.backend.happyhome.service.consumer_service;
 import org.springframework.stereotype.Service;
 
 import com.backend.happyhome.entities.ConsumerTransaction;
+import com.backend.happyhome.entities.Order;
+import com.backend.happyhome.repository.OrderRepo;
 import com.backend.happyhome.repository.consumer_repos.ConsumerTransactionRepo;
 
 import jakarta.transaction.Transactional;
@@ -13,13 +15,18 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class ConsumerTransactionServiceImpl implements ConsumerTransactionService {
 
-	ConsumerTransactionRepo ctRepo;
+	private final ConsumerTransactionRepo ctRepo;
+	
+	private final OrderRepo orderRepo;
 	
 	@Override
-	public ConsumerTransaction addTrasaction(ConsumerTransaction newTran) {
+	public Order addTrasaction(ConsumerTransaction newTran) {
 		
-		return	ctRepo.save(newTran);
+		ConsumerTransaction savedCt = ctRepo.save(newTran);
+		Order o = orderRepo.findById(savedCt.getOrderId().getOrderId()).orElseThrow();
+		o.setMyConsumerTransaction(savedCt);
 		
+		return orderRepo.save(o);
 	}
 
 }

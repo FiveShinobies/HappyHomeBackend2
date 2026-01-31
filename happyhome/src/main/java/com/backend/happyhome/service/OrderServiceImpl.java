@@ -1,31 +1,25 @@
 package com.backend.happyhome.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
-import com.backend.happyhome.dtos.OrderDtoC;
-import com.backend.happyhome.entities.Address;
-import com.backend.happyhome.entities.Consumer;
-import com.backend.happyhome.entities.Order;
-import com.backend.happyhome.entities.enums.Status;
-import com.backend.happyhome.repository.OrderRepo;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.happyhome.controller.ConsumerController;
 import com.backend.happyhome.custom_exceptions.CannotChangeTimeSlotException;
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExistException;
 import com.backend.happyhome.custom_exceptions.ReviewAlreadyExistsException;
+import com.backend.happyhome.dto.OrderDTO;
+import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerReviewDTOA;
-import com.backend.happyhome.dtos.OrderDtoC;
+import com.backend.happyhome.dtos.OrderDtoD;
 import com.backend.happyhome.dtos.PlaceOrderDTOA;
+import com.backend.happyhome.dtos.ServiceDtoC;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.ConsumerReview;
@@ -37,7 +31,7 @@ import com.backend.happyhome.repository.ConsumerRepo;
 import com.backend.happyhome.repository.ConsumerReviewRepo;
 import com.backend.happyhome.repository.HouseholdServiceRepo;
 import com.backend.happyhome.repository.OrderRepo;
-import com.backend.happyhome.repository.VendorRepo;
+import com.backend.happyhome.repository.consumer_repos.ConsumerTransactionRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,20 +47,79 @@ public class OrderServiceImpl implements OrderService{
 	
 	private final ConsumerRepo consumerRepo;
 	
-	private final VendorRepo vendorRepo;
-	
 	private final HouseholdServiceRepo serviceRepo;
 	
 	private final AddressRepo addressRepo; 
 	
+	private final ConsumerTransactionRepo ctRepo;
+	
 	@Override
-	public List<OrderDtoC> getIncomingOrderRequest() {
-		return orderRepo.findByStatus(Status.UNASSIGNED);
+	public List<OrderDtoD> getIncomingOrderRequest() {
+
+	    List<Order> orders = orderRepo.findByStatus(Status.UNASSIGNED);
+
+	    if (orders == null || orders.isEmpty()) {
+	        return Collections.emptyList();
+	    }
+
+	    List<OrderDtoD> result = new ArrayList<>();
+
+	    for (Order o : orders) {
+
+	        OrderDtoD dto = new OrderDtoD();
+
+	        // ✅ Address → AddressDtoC
+	        if (o.getOrderAddress() != null) {
+	            Address a = addressRepo
+	                    .findById(o.getOrderAddress().getAddressId())
+	                    .orElse(null);
+
+	            if (a != null) {
+	                AddressDto ad = new AddressDto();
+	                ad.setTown(a.getTown());
+	                ad.setCity(a.getCity());
+	                ad.setPincode(a.getPincode());
+	                dto.setAddress(ad);
+	            }
+	        }
+
+	        // ✅ HouseholdService → ServiceDtoC (USING YOUR DTO)
+	        if (o.getMyServices() != null) {
+	            HouseholdService s = serviceRepo
+	                    .findById(o.getMyServices().getServiceId())
+	                    .orElse(null);
+
+	            if (s != null) {
+	                ServiceDtoC sd = new ServiceDtoC();
+	                sd.setCategory(s.getCategory());
+	                sd.setServiceName(s.getServiceName());
+	                dto.setService(sd);
+	            }
+	        }
+
+	        dto.setPrice(o.getOrderPrice());
+	        dto.setPriority(o.getPriority());
+	        dto.setTimeSlot(o.getTimeSlot());
+            dto.setOrderId(o.getOrderId());
+	        result.add(dto);
+	    }
+
+	    return result;
 	}
 
+
+
 	@Override
-	public List<OrderDtoC> getOngoingOrders() {
-		return orderRepo.findByStatus(Status.INPROGRESS);
+	public OrderDTO getOngoingOrders(Long oId) {
+		Order o = orderRepo.findById(oId).orElseThrow(()-> new OrderDoesNotExist());
+//		OrderDtoC oD = new OrderDtoC();
+//		oD.setAddress(o.getOrderAddress());
+//		oD.setMyVendor(o.getMyVendor());
+//		oD.setPrice(o.getOrderPrice());
+//		oD.setPriority(o.getPriority());
+//		oD.setTimeSlot(o.getTimeSlot());
+		
+		return ConsumerController.mapToOrderDTO(o);
 	}
 	
 	public Address getAddress(Long oId) {
@@ -158,56 +211,23 @@ public class OrderServiceImpl implements OrderService{
 		HouseholdService s = serviceRepo.findById(reqOdr.getServiceId()).orElseThrow();
 		
 		Address a = addressRepo.findById(reqOdr.getAddressId()).orElseThrow() ;
-		
+				
 		newOdr.setMyConsumer(c);
 		newOdr.setMyServices(s);
-		newOdr.setMyAddress(a);
-		newOdr.setOrderDateTime(reqOdr.getTimeSlot());
+		newOdr.setOrderAddress(a);
+		newOdr.setTimeSlot(reqOdr.getTimeSlot());
 		newOdr.setOrderPrice(reqOdr.getOrderPrice());
-		newOdr.setStatus(reqOdr.getStatus());
+		newOdr.setStatus(Status.UNASSIGNED);
 		newOdr.setPriority(reqOdr.getPriority());
-
+		
 		return orderRepo.save(newOdr);
 	}
 
-//	@Override
-//	public com.backend.happyhome.service.Order changeTimeSlot(Long oid,
-//			com.backend.happyhome.service.LocalDateTime updatedTime) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.ConsumerReview addConsumerReviewForAnOrder(Long oid,
-//			com.backend.happyhome.service.ConsumerReviewDTOA cr) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.Order addOrder(com.backend.happyhome.service.PlaceOrderDTOA newOrder) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.Order changeTimeSlot(Long oid,
-//			com.backend.happyhome.service.LocalDateTime updatedTime) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.ConsumerReview addConsumerReviewForAnOrder(Long oid,
-//			com.backend.happyhome.service.ConsumerReviewDTOA cr) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public com.backend.happyhome.service.Order addOrder(com.backend.happyhome.service.PlaceOrderDTOA newOrder) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
+	@Override
+	public List<Order> getAllOrders(){
+		return orderRepo.findAll();
+	}
+	
+	
 }

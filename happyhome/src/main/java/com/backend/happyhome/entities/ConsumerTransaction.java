@@ -2,7 +2,6 @@ package com.backend.happyhome.entities;
 
 import java.time.LocalDateTime;
 
-import com.backend.happyhome.entities.enums.Payment;
 import com.backend.happyhome.entities.enums.TransactionStatus;
 
 import jakarta.persistence.Column;
@@ -53,6 +52,5 @@ public class ConsumerTransaction {
 	
 	@Column(name = "timestamp")
 	private LocalDateTime timestamp;
-	
 	
 }

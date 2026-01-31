@@ -11,5 +11,7 @@ public interface ServiceImageRepo extends JpaRepository<ServiceImage, Long> {
 
 	List<ServiceImage> findByMyService(HouseholdService service);
 
+	void deleteByMyServiceServiceId(Long sid);
+
 	
 }
