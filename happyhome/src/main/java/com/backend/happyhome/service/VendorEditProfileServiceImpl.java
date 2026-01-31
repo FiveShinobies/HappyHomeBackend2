@@ -95,15 +95,13 @@ public class VendorEditProfileServiceImpl implements VendorEditProfileService {
 //			vendor.setMyServices(services);
 		if (request.getServicesProvided() != null && !request.getServicesProvided().isEmpty()) {
 
-			System.out.println("Requested service IDs: " + request.getServicesProvided());
+			
 
 			// Convert List<Long> to Set<Long> for the query
 			Set<Long> serviceIds = new HashSet<>(request.getServicesProvided());
 
 			// Find services by IDs
 			List<HouseholdService> foundServices = serviceRepository.findAllById(serviceIds);
-
-			System.out.println("Found " + foundServices.size() + " services");
 
 			if (foundServices.size() != request.getServicesProvided().size()) {
 				// Find which IDs are missing

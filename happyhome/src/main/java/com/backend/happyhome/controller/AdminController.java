@@ -23,6 +23,7 @@ import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.AdminEditVendorRequestDTOE;
 import com.backend.happyhome.dtos.AdminOrderDetailsDTOE;
 import com.backend.happyhome.dtos.ConsumerDtoC;
+import com.backend.happyhome.dtos.ConsumerSummeryDtoB;
 import com.backend.happyhome.dtos.CreateServiceRequestDTOB;
 import com.backend.happyhome.dtos.HouseholdServicesListDTOB;
 import com.backend.happyhome.dtos.ServiceDetailsDTOB;
@@ -40,6 +41,7 @@ import com.backend.happyhome.service.admin_service.AdminOrderService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/admin")
@@ -58,7 +60,6 @@ public class AdminController {
 
 	private final AdminOrderService adService;
 
-	
 	// Get all vendors
 	@GetMapping("/vendors")
 	public ResponseEntity<List<VendorSummaryDTOE>> getAllVendors() {
@@ -171,6 +172,13 @@ public class AdminController {
 
 	}
 
+	@GetMapping("/consumers")
+	public ResponseEntity<List<ConsumerSummeryDtoB>> getAllConsumers() {
+		
+		return ResponseEntity.ok(consumerService.getAllConsumerForAdmin());
+
+	}
+
 	@GetMapping("/consumer/{id}")
 	ResponseEntity<ConsumerDtoC> getConsumerDetailsById(@PathVariable Long id) {
 		return new ResponseEntity<>(consumerService.getConsumerDetailsById(id), HttpStatus.OK);
@@ -189,12 +197,9 @@ public class AdminController {
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
-	
 	@GetMapping("/dashboard")
 	public ResponseEntity<?> getDashboard() {
 		return ResponseEntity.ok(adService.getDashboardData());
 	}
-	
-	
-	
+
 }
