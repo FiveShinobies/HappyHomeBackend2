@@ -94,7 +94,9 @@ public class ConsumerController {
 	
 	
 	// to map to orderDto
+
 	public static OrderDTO mapToOrderDTO(Order order) {
+
 
 	    OrderDTO dto = new OrderDTO();
 

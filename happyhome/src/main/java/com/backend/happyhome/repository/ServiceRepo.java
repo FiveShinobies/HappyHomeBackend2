@@ -12,6 +12,6 @@ public interface ServiceRepo extends JpaRepository<HouseholdService, Long> {
 
 	HouseholdService findByCategoryAndServiceName(Category category, String serviceName);
 	
-	List<HouseholdService> findByServiceNameIn(Set<String>serviceNames);
+	List<HouseholdService> findByServiceNameIn(Set<String> serviceNames);
 	
 }

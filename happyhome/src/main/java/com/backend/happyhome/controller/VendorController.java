@@ -91,7 +91,7 @@ public class VendorController {
             @PathVariable Long vendorId,
             @RequestBody VendorEditProfileRequestDTOE request) {
     	
-    	System.out.print(request);
+    	
     	
         vendorEditProfileService.editProfile(vendorId, request);
         return ResponseEntity.ok("Vendor profile updated successfully");
