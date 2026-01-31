@@ -150,6 +150,7 @@ public class AdminVendorServiceImpl implements AdminVendorService {
 					AdminOrderDetailsDTOE dto = new AdminOrderDetailsDTOE();
 					dto.setOrderId(order.getOrderId());
 					dto.setOrderDate(order.getOrderDateTime());
+					dto.setName(order.getMyServices().getServiceName());
 					dto.setTotal(order.getOrderPrice());
 					dto.setStatus(order.getStatus());
 					return dto;

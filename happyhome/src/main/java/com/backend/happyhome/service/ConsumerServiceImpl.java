@@ -15,6 +15,7 @@ import com.backend.happyhome.custom_exceptions.UserNotPresentException;
 import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerDtoC;
+import com.backend.happyhome.dtos.ConsumerSummeryDtoB;
 import com.backend.happyhome.dtos.consumer_dto.EditConsumerProfileRequestD;
 import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
@@ -207,6 +208,22 @@ public class ConsumerServiceImpl implements ConsumerService {
 	    userRepo.save(user);
 
 	    return dto; // or map back response DTO
+	}
+
+	@Override
+	public List<ConsumerSummeryDtoB> getAllConsumerForAdmin() {
+		// TODO Auto-generated method stub
+		List<ConsumerSummeryDtoB> consumer = consumerRepo.findAll()
+				.stream()
+				.map(c ->{
+					 List<Address> addresses = addressRepo.findByMyUserUserId(c.getMyUser().getUserId());
+					 return new ConsumerSummeryDtoB
+							 (c.getConsumerId(),
+							  c.getMyUser().getFirstName()+" "+c.getMyUser().getLastName(), 
+							  c.getMyUser().getEmail(), 
+							  addresses.get(0).getCity());
+				}).toList();
+		return consumer;
 	}
 
 

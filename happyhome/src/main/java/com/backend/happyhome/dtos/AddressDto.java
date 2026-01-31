@@ -1,8 +1,12 @@
 package com.backend.happyhome.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class AddressDto {
 	
 	private Long addressId;
