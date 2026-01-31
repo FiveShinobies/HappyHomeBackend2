@@ -38,7 +38,7 @@ public class SecurityConfig {
 	
     
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
             // Enable CORS
@@ -56,7 +56,8 @@ public class SecurityConfig {
                     "/login",
                     "/error",
                     "/categories",
-                    "/signup/**"
+                    "/signup/**",
+                    "/services/**"
                 ).permitAll()
                 
                 .requestMatchers("/consumer/**").hasRole("CONSUMER")

@@ -66,6 +66,7 @@ public class JwtUtil {
 					null,
 					roles == null ? List.of() :
 							Arrays.stream(roles.split(","))
+							.map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
 							.map(SimpleGrantedAuthority::new)
 							.toList()
 			);

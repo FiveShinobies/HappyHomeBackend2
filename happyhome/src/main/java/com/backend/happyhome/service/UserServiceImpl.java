@@ -3,18 +3,24 @@ package com.backend.happyhome.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.backend.happyhome.dtos.UserLoginDtoC;
-import com.backend.happyhome.dtos.VendorRegisterDtoC;
 import com.backend.happyhome.custom_exceptions.UserAlreadyPresentException;
 import com.backend.happyhome.custom_exceptions.UserNotPresentException;
 import com.backend.happyhome.dtos.ConsumerRegisterDtoC;
+import com.backend.happyhome.dtos.ServiceDtoC;
+import com.backend.happyhome.dtos.UserLoginDtoC;
+import com.backend.happyhome.dtos.VendorRegisterDtoC;
 import com.backend.happyhome.entities.Consumer;
+import com.backend.happyhome.entities.HouseholdService;
 import com.backend.happyhome.entities.User;
 import com.backend.happyhome.entities.Vendor;
 import com.backend.happyhome.entities.enums.UserRole;
+import com.backend.happyhome.repository.AddressRepo;
 import com.backend.happyhome.repository.ConsumerRepo;
+import com.backend.happyhome.repository.ServiceRepo;
 import com.backend.happyhome.repository.UserRepo;
 import com.backend.happyhome.repository.VendorRepo;
+import com.backend.happyhome.repository.language_repos.LanguageRepository;
+import com.backend.happyhome.repository.vendor_repos.VendorWalletRepo;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,11 +43,7 @@ public class UserServiceImpl implements UserService {
 	public User isUserPresent(UserLoginDtoC user){
 		
 		User userFromDb = userRepo.getByEmail(user.getEmail()).orElseThrow(()->new UserNotPresentException());
-		return userFromDb;
-		if (!passwordEncoder.matches(user.getPassword(), user.getPassword())) {
-            throw new UserNotPresentException();
-        }
-
+		
         return userFromDb;
 	}
 
@@ -94,7 +96,10 @@ public class UserServiceImpl implements UserService {
 		vendor.setAadharNo(user.getAadhardNo());
 		vendor.setPanNo(user.getPanNo());
 		vendor.setExperience(user.getExperience());
-		vendor.setMyServices(user.getServices());
+		for(ServiceDtoC e : user.getServices()) {
+			HouseholdService service = serviceRepo.findByCategoryAndServiceName(e.getCategory(), e.getServiceName());
+			vendor.getMyServices().add(service);
+		}
 		vendor.setMyUser(userRepo.getByEmail(userToDb.getEmail()).get());
 		vendorRepo.save(vendor);
 	}
@@ -121,5 +126,25 @@ public class UserServiceImpl implements UserService {
 			userRepo.save(u);
 		return true;
 	}
+
+		@Override
+		public Long giveRespectiveId(Long uid) {
+			
+			Consumer c = consumerRepo.findByMyUser_UserId(uid);
+			
+			if(c != null) {
+				return c.getConsumerId();
+			}
+			
+			Vendor v = vendorRepo.findByMyUserUserId(uid);
+			
+			if(v != null) {
+				return v.getVendorId();
+			}
+			
+			return uid;
+			
+		}
+		
 
 }

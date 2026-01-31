@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,13 +56,7 @@ public class ConsumerController {
 		
 		return ResponseEntity.ok("address deleted successfully");
 	}
-	
-	@GetMapping("/all")
-	ResponseEntity<List<ConsumerDtoC>> getAllConsumers(){
-		return new ResponseEntity<>(consumerService.getAllConsumers(),HttpStatus.OK);
-	}
-	
-	
+		
 	// to be re written
 	@PutMapping("/edit/{id}")
 	ResponseEntity<EditConsumerProfileRequestD> editConsumerDetails(@RequestBody EditConsumerProfileRequestD consumer,@PathVariable Long id){
@@ -71,6 +67,7 @@ public class ConsumerController {
 	
 	@GetMapping("/{id}/allOrders")
 	ResponseEntity<List<OrderDTO>> getAllOrdersOfConsumer(@PathVariable Long id){
+				
 		List<OrderDTO> res = new ArrayList<>();
 		List<Order> x = consumerService.getAllOrdersOfConsumer(id);
 		

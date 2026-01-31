@@ -41,7 +41,6 @@ import com.backend.happyhome.service.admin_service.AdminOrderService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/admin")
@@ -104,41 +103,6 @@ public class AdminController {
 		return ResponseEntity.ok(adminServiceService.getServiceDetailsById(id));
 	}
 
-	// use this for testing in postman
-//	@PostMapping(
-//	        value = "/service/add",
-//	        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-//	)
-//	
-//	public ResponseEntity<?> createService(
-//
-//			@RequestPart("data") String data,
-//
-//	        @RequestPart(value = "image", required = false)
-//	        MultipartFile imageFile
-//	) throws JsonMappingException, JsonProcessingException {
-//		
-//		ObjectMapper mapper = new ObjectMapper();
-//	    CreateServiceRequestDTOB request =
-//	            mapper.readValue(data, CreateServiceRequestDTOB.class);
-//
-//	    try {
-//	        Long serviceIdLong = adminServiceService.createService(request, imageFile);
-//
-//	        return ResponseEntity.status(HttpStatus.CREATED)
-//	                .body(Map.of(
-//	                        "message", "Service created successfully",
-//	                        "service", serviceIdLong
-//	                ));
-//
-//	    } catch (Exception e) {
-//	        return ResponseEntity
-//	                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//	                .body(e.getMessage());
-//	    }
-//	}
-//	
-	// use this for real production
 	@PostMapping(value = "/service/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> createService(
 
