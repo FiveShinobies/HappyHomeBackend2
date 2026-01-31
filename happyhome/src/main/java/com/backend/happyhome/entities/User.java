@@ -1,14 +1,18 @@
 package com.backend.happyhome.entities;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.HashSet;
+
 import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.backend.happyhome.entities.enums.UserRole;
 import com.backend.happyhome.entities.enums.UserStatus;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,7 +32,7 @@ import lombok.NonNull;
 @Entity
 @Data
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="user_id")
@@ -68,4 +72,39 @@ public class User {
 		languages.add(lang);
 	}
 
+	@Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Set.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return userStatus == UserStatus.ACTIVE;
+    }
 }
+

@@ -1,5 +1,6 @@
 package com.backend.happyhome.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.backend.happyhome.dtos.UserLoginDtoC;
@@ -26,12 +27,28 @@ public class UserServiceImpl implements UserService {
 	private final UserRepo userRepo;
 	private final VendorRepo vendorRepo;
 	private final ConsumerRepo consumerRepo;
+<<<<<<< HEAD
+=======
+	private final AddressRepo addressRepo;
+	private final ServiceRepo serviceRepo;
+	private final LanguageRepository languageRepo;
+	private final VendorWalletRepo vwRepo;
+	private final PasswordEncoder passwordEncoder;
+>>>>>>> 6a68fa7 (JWT filter and Authentication added)
 	
 	@Override
-	public User isUserPresent(UserLoginDtoC user) throws UserNotPresentException{
+	public User isUserPresent(UserLoginDtoC user){
 		
 		User userFromDb = userRepo.getByEmail(user.getEmail()).orElseThrow(()->new UserNotPresentException());
+<<<<<<< HEAD
 		return userFromDb;
+=======
+		if (!passwordEncoder.matches(user.getPassword(), user.getPassword())) {
+            throw new UserNotPresentException();
+        }
+
+        return userFromDb;
+>>>>>>> 6a68fa7 (JWT filter and Authentication added)
 	}
 
 	@Override
@@ -47,7 +64,7 @@ public class UserServiceImpl implements UserService {
 		userToDb.setFirstName(user.getFirstName());
 		userToDb.setLastName(user.getLastName());
 		userToDb.setEmail(user.getEmail());
-		userToDb.setPassword(user.getPassword());
+		userToDb.setPassword(passwordEncoder.encode(user.getPassword()));
 		userToDb.setDob(user.getDob());
 		userToDb.setPhone(user.getPhone());
 		userToDb.setRole(UserRole.CONSUMER);
@@ -57,7 +74,7 @@ public class UserServiceImpl implements UserService {
 		Consumer consumer = new Consumer();
 		consumer.setMyUser(u);
 		consumer.setRewardPoints(0);
-		
+			
 		consumerRepo.save(consumer);
 	}
 	
@@ -71,7 +88,7 @@ public class UserServiceImpl implements UserService {
 		userToDb.setFirstName(user.getFirstName());
 		userToDb.setLastName(user.getLastName());
 		userToDb.setEmail(user.getEmail());
-		userToDb.setPassword(user.getPassword());
+		userToDb.setPassword(passwordEncoder.encode(user.getPassword()));
 		userToDb.setDob(user.getDob());
 		userToDb.setPhone(user.getPhone());
 		userToDb.setRole(UserRole.VENDOR);
@@ -88,6 +105,30 @@ public class UserServiceImpl implements UserService {
 		vendorRepo.save(vendor);
 	}
 	
+<<<<<<< HEAD
 	
+=======
+	@Override
+	public boolean changePassword(Long uid, String newPass , UserRole role) {
+		User u = null;		
+		if( role.equals(UserRole.CONSUMER)) {
+			System.out.println("its is consumer");
+			Consumer c = consumerRepo.findById(uid).orElseThrow(() -> new UserNotPresentException());
+			u = userRepo.findById(c.getMyUser().getUserId()).orElseThrow(() -> new UserNotPresentException());
+		}else if(role.equals(UserRole.VENDOR)) {			
+			System.out.println("its is vendor");
+			Vendor v = vendorRepo.findById(uid).orElseThrow(() -> new UserNotPresentException());
+			u = userRepo.findById(v.getMyUser().getUserId()).orElseThrow(() -> new UserNotPresentException());
+		}else {
+			System.out.println("its is admin");
+			u = userRepo.findById(uid).orElseThrow(() -> new UserNotPresentException());
+		}
+		
+		u.setPassword(passwordEncoder.encode(newPass));
+		
+			userRepo.save(u);
+		return true;
+	}
+>>>>>>> 6a68fa7 (JWT filter and Authentication added)
 
 }
