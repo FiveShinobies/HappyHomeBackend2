@@ -17,6 +17,7 @@ import com.backend.happyhome.custom_exceptions.ReviewAlreadyExistsException;
 import com.backend.happyhome.dto.OrderDTO;
 import com.backend.happyhome.dtos.AddressDto;
 import com.backend.happyhome.dtos.ConsumerReviewDTOA;
+import com.backend.happyhome.dtos.OrderDtoC;
 import com.backend.happyhome.dtos.OrderDtoD;
 import com.backend.happyhome.dtos.PlaceOrderDTOA;
 import com.backend.happyhome.dtos.ServiceDtoC;
@@ -109,13 +110,6 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderDTO getOngoingOrders(Long oId) {
 		Order o = orderRepo.findById(oId).orElseThrow(() -> new OrderDoesNotExist());
-		// OrderDtoC oD = new OrderDtoC();
-		// oD.setAddress(o.getOrderAddress());
-		// oD.setMyVendor(o.getMyVendor());
-		// oD.setPrice(o.getOrderPrice());
-		// oD.setPriority(o.getPriority());
-		// oD.setTimeSlot(o.getTimeSlot());
-
 		return ConsumerController.mapToOrderDTO(o);
 	}
 

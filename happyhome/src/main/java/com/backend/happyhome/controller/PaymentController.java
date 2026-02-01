@@ -38,9 +38,9 @@ public class PaymentController {
 	private final ConsumerTransactionServiceImpl ctService;
 	
 	@PostMapping("/create-order")
-	public ResponseEntity<Map<String , Object>> createOrder(@RequestParam int amount, @RequestParam String currency , @RequestParam Long cid ) throws RazorpayException 
+	public ResponseEntity<Map<String , Object>> createOrder(@RequestParam double amount, @RequestParam String currency , @RequestParam Long cid ) throws RazorpayException 
 	{
-
+		
 	    Order order = rpService.createOrder(amount, currency, Long.toString(cid));
 	    
 	    return ResponseEntity.ok(order.toJson().toMap()); 

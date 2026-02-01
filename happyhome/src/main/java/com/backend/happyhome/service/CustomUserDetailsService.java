@@ -14,13 +14,12 @@ import org.springframework.stereotype.Service;
 import com.backend.happyhome.entities.User;
 import com.backend.happyhome.repository.UserRepo;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService{
 	private final UserRepo userRepo;
-
-    public CustomUserDetailsService(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String email)
