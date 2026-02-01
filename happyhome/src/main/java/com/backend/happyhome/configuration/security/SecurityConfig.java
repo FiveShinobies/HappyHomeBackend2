@@ -51,6 +51,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // 🔓 PUBLIC ENDPOINTS
                 .requestMatchers(
+                	"/**",
                     "/payments/**",
                     "/auth/**",
                     "/login",

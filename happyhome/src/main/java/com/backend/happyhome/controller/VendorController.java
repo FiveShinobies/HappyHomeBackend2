@@ -45,12 +45,13 @@ public class VendorController {
     private final VendorReviewService vendorReviewService;
 	
 	
-	@GetMapping("/details/{id}")
+	@GetMapping("/details/{oId}")
 	ResponseEntity<OrderDTO> getOngoingOrderDetails(@PathVariable Long oId){
+		System.out.println(oId);
 		return new ResponseEntity<>(orderService.getOngoingOrders(oId),HttpStatus.OK);
 	}
 	
-	@GetMapping("/{id}/orderaddress")
+	@GetMapping("/{oId}/orderaddress")
 	ResponseEntity<Address> getAddressOfOrder(@PathVariable Long oId){
 		return new ResponseEntity<>(vendorService.getAddressOfOrder(oId),HttpStatus.OK);
 	}
@@ -144,6 +145,7 @@ public class VendorController {
 	    
 	    @GetMapping("/dashboard/{vid}")
 	    public ResponseEntity<?> getDashboard(@PathVariable Long vid){
+	    	System.out.println(vid);
 	    	return ResponseEntity.ok(vendorService.dashboardData(vid));
 	    }
 	    

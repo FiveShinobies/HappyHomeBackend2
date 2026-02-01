@@ -9,10 +9,12 @@ import com.backend.happyhome.dtos.ConsumerRegisterDtoC;
 import com.backend.happyhome.dtos.ServiceDtoC;
 import com.backend.happyhome.dtos.UserLoginDtoC;
 import com.backend.happyhome.dtos.VendorRegisterDtoC;
+import com.backend.happyhome.entities.Address;
 import com.backend.happyhome.entities.Consumer;
 import com.backend.happyhome.entities.HouseholdService;
 import com.backend.happyhome.entities.User;
 import com.backend.happyhome.entities.Vendor;
+import com.backend.happyhome.entities.VendorWallet;
 import com.backend.happyhome.entities.enums.UserRole;
 import com.backend.happyhome.repository.AddressRepo;
 import com.backend.happyhome.repository.ConsumerRepo;
@@ -54,7 +56,6 @@ public class UserServiceImpl implements UserService {
 		{;
 			throw new UserAlreadyPresentException();
 		}
-
 		
 		User userToDb = new User();
 		userToDb.setFirstName(user.getFirstName());
@@ -67,11 +68,23 @@ public class UserServiceImpl implements UserService {
 		
 		User u = userRepo.save(userToDb);
 		
+		
+		
 		Consumer consumer = new Consumer();
 		consumer.setMyUser(u);
 		consumer.setRewardPoints(0);
 			
 		consumerRepo.save(consumer);
+		
+		Address address = new Address();
+		address.setCity(user.getAddress().getCity());
+		address.setHomeNo(user.getAddress().getHomeNo());
+		address.setMyUser(u);
+		address.setPincode(user.getAddress().getPincode());
+		address.setState(user.getAddress().getState());
+		address.setTown(user.getAddress().getTown());
+		
+		addressRepo.save(address);
 	}
 	
 	public void registerVendorUser(VendorRegisterDtoC user) throws UserAlreadyPresentException{
@@ -100,8 +113,23 @@ public class UserServiceImpl implements UserService {
 			HouseholdService service = serviceRepo.findByCategoryAndServiceName(e.getCategory(), e.getServiceName());
 			vendor.getMyServices().add(service);
 		}
+		
 		vendor.setMyUser(userRepo.getByEmail(userToDb.getEmail()).get());
-		vendorRepo.save(vendor);
+		vendor = vendorRepo.save(vendor);
+		
+		Address address = new Address();
+		address.setCity(user.getAddress().getCity());
+		address.setHomeNo(user.getAddress().getHomeNo());
+		address.setMyUser(u);
+		address.setPincode(user.getAddress().getPincode());
+		address.setState(user.getAddress().getState());
+		address.setTown(user.getAddress().getTown());
+		
+		addressRepo.save(address);
+		
+		VendorWallet vw = new VendorWallet();
+		vw.setMyVendor(vendor);
+		vwRepo.save(vw);
 	}
 	
 	

@@ -111,7 +111,7 @@ public class VendorServiceImpl implements VendorService{
 	@Override
 	public VendorDashboardDTOA dashboardData(Long vid) {
 		
-		Vendor v = vendorRepo.findById(vid).orElseThrow(()-> new VendorDoesNotExistException());
+		vendorRepo.findById(vid).orElseThrow(()-> new VendorDoesNotExistException());
 		List<Order> orders = orderRepo.findByMyVendorVendorId(vid);
 		List<OrderDTO> orderDtoList = new ArrayList<>();
 		Double amt = vwRepo.findByMyVendorVendorId(vid).getBalance();

@@ -22,7 +22,7 @@ public class RazorpayService {
 	private String apiSecret;
 	
 	
-	public Order createOrder(int amount, String currency, String receipt)
+	public Order createOrder(double amount, String currency, String receipt)
             throws RazorpayException {
 
         RazorpayClient client = new RazorpayClient(apiKey, apiSecret);
