@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,11 +25,13 @@ import com.backend.happyhome.dtos.consumer_dto.EditConsumerProfileRequestD;
 import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.service.ConsumerService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/consumer")
 @RequiredArgsConstructor
+@Validated
 public class ConsumerController {
 
 	private final ConsumerService consumerService;
@@ -59,7 +62,7 @@ public class ConsumerController {
 		
 	// to be re written
 	@PutMapping("/edit/{id}")
-	ResponseEntity<EditConsumerProfileRequestD> editConsumerDetails(@RequestBody EditConsumerProfileRequestD consumer,@PathVariable Long id){
+	ResponseEntity<EditConsumerProfileRequestD> editConsumerDetails(@RequestBody @Valid EditConsumerProfileRequestD consumer,@PathVariable Long id){
 		return new ResponseEntity<>(consumerService.editConsumerDetails(consumer, id),HttpStatus.OK);
 	}
 	
