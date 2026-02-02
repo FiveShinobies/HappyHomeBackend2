@@ -35,7 +35,7 @@ public class AuditLog {
 	private String httpMethod;
 	private String ipAddress;
 	
-	@Column(length = 100)
+	@Column(columnDefinition = "TEXT")
 	private String errorMessage;
 	
 	private LocalDateTime timestamp;
