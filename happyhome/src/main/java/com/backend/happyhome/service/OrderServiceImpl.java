@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.happyhome.audit.AuditAction;
+import com.backend.happyhome.audit.annotation.Audit;
 import com.backend.happyhome.controller.ConsumerController;
 import com.backend.happyhome.custom_exceptions.CannotChangeTimeSlotException;
 import com.backend.happyhome.custom_exceptions.ConsumerNotFoundException;
@@ -191,6 +193,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	@Audit(action = AuditAction.BOOKING_CREATED)
 	public Order addOrder(PlaceOrderDTOA reqOdr) {
 
 		Order newOdr = new Order();

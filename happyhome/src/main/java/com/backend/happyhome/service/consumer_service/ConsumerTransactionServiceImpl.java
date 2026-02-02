@@ -2,6 +2,8 @@ package com.backend.happyhome.service.consumer_service;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.happyhome.audit.AuditAction;
+import com.backend.happyhome.audit.annotation.Audit;
 import com.backend.happyhome.entities.ConsumerTransaction;
 import com.backend.happyhome.entities.Order;
 import com.backend.happyhome.repository.OrderRepo;
@@ -20,6 +22,7 @@ public class ConsumerTransactionServiceImpl implements ConsumerTransactionServic
 	private final OrderRepo orderRepo;
 	
 	@Override
+	@Audit(action = AuditAction.PAYMENT_INITIATED)
 	public Order addTrasaction(ConsumerTransaction newTran) {
 		
 		ConsumerTransaction savedCt = ctRepo.save(newTran);

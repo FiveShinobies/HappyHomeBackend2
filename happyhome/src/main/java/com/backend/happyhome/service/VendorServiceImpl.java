@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.happyhome.audit.AuditAction;
+import com.backend.happyhome.audit.annotation.Audit;
 import com.backend.happyhome.controller.ConsumerController;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExist;
 import com.backend.happyhome.custom_exceptions.OrderDoesNotExistException;
@@ -84,6 +86,7 @@ public class VendorServiceImpl implements VendorService{
 	}
 
 	@Override
+	@Audit(action = AuditAction.PAYMENT_SUCCESS)
 	public boolean payVendor(Long oid) {
 		ConsumerTransaction ct = ctRepo.findByOrderIdOrderId(oid);
 		Order o = orderRepo.findById(oid).orElseThrow(()-> new OrderDoesNotExistException("Order Not Found"));

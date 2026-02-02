@@ -3,6 +3,8 @@ package com.backend.happyhome.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.backend.happyhome.audit.AuditAction;
+import com.backend.happyhome.audit.annotation.Audit;
 import com.backend.happyhome.custom_exceptions.UserAlreadyPresentException;
 import com.backend.happyhome.custom_exceptions.UserNotPresentException;
 import com.backend.happyhome.dtos.ConsumerRegisterDtoC;
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
 	private final PasswordEncoder passwordEncoder;
 	
 	@Override
+	@Audit(action = AuditAction.LOGIN)
 	public User isUserPresent(UserLoginDtoC user){
 		
 		User userFromDb = userRepo.getByEmail(user.getEmail()).orElseThrow(()->new UserNotPresentException());
@@ -49,7 +52,9 @@ public class UserServiceImpl implements UserService {
         return userFromDb;
 	}
 
+	
 	@Override
+	@Audit(action = AuditAction.CONSUMER_REGISTERED)
 	public void registerConsumerUser(ConsumerRegisterDtoC user) throws UserAlreadyPresentException {
 		// TODO Auto-generated method stub
 		if(userRepo.getByEmail(user.getEmail()).orElse(null) != null || userRepo.getByPhone(user.getPhone()).orElse(null) != null) 
@@ -87,6 +92,8 @@ public class UserServiceImpl implements UserService {
 		addressRepo.save(address);
 	}
 	
+	@Override
+	@Audit(action = AuditAction.VENDOR_REGISTERED)
 	public void registerVendorUser(VendorRegisterDtoC user) throws UserAlreadyPresentException{
 		if(userRepo.getByEmail(user.getEmail()).orElse(null) != null || userRepo.getByPhone(user.getPhone()).orElse(null) != null) 
 		{;

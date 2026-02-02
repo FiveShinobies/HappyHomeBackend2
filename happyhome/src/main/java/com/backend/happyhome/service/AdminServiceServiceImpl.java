@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backend.happyhome.audit.AuditAction;
+import com.backend.happyhome.audit.annotation.Audit;
 import com.backend.happyhome.custom_exceptions.ImageNotUploadedException;
 import com.backend.happyhome.custom_exceptions.ServiceNotFoundException;
 import com.backend.happyhome.dtos.CreateServiceRequestDTOB;
@@ -40,6 +42,7 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 	}
 
 	@Override
+	@Audit(action = AuditAction.SERVICE_CREATED)
 	public Long createService(CreateServiceRequestDTOB request, MultipartFile imageFile)
 			throws ImageNotUploadedException {
 
@@ -75,6 +78,7 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 
 
 	@Override
+	@Audit(action = AuditAction.SERVICE_DELETED)
 	public void deleteService(Long sid) {
 
 		HouseholdService service = serviceRepo.findByServiceIdAndActiveTrue(sid)
@@ -84,6 +88,7 @@ public class AdminServiceServiceImpl implements AdminServiceService {
 	}
 
 	@Override
+	@Audit(action = AuditAction.SERVICE_UPDATED)
 	public void updateService(Long serviceId, UpdateServiceRequestDTOB dto,MultipartFile image) {
 
 		HouseholdService service = serviceRepo.findByServiceIdAndActiveTrue(serviceId)
