@@ -25,7 +25,6 @@ import jakarta.servlet.http.HttpServletRequest;
 public class LoggingAspect {
 
 	private static final Logger log = LoggerFactory.getLogger(LoggingAspect.class);
-
 	private static final int MAX_ERROR_LENGTH = 1000;
 	
 	@Autowired
@@ -134,16 +133,15 @@ public class LoggingAspect {
 			if(audit.action() == AuditAction.PAYMENT_INITIATED) {
 				logEntity.setAction(AuditAction.PAYMENT_FAILED);
 			}
-
-			logEntity.setSuccess(false);
 			
 			String errorMsg = ex.getMessage();
 			if (errorMsg != null && errorMsg.length() > MAX_ERROR_LENGTH) {
 			    errorMsg = errorMsg.substring(0, MAX_ERROR_LENGTH);
 			}
+
+			logEntity.setSuccess(false);
 			logEntity.setErrorMessage(errorMsg);
 			
-
 			throw ex;
 		}finally {
 
